@@ -115,7 +115,7 @@ The conventional (rigid) Tube MPC design problem has the form:
 		\label{eq:tmpc_constraints_input_delta_k}
 		&\,& \Delta \hat{u}_{l} \in \mathbb{U}_{\Delta} \ominus K \, \mathbb{T} , \\
 		\label{eq:tmpc_constraints_input_delta_0}
-		&\,& \hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U} , \quad
+		&\,& \hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U}_{\Delta} , \quad
 	\end{eqnarray}
 \end{subequations}
 where $\forall k = 0, \dots, N-1$,  $\forall l = 1, \dots, N-1$, $N$ is prediction horizon.

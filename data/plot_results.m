@@ -1,5 +1,5 @@
 % disturbance at time approx. 10s and 20s
-load tube5
+load tube10
 close all
 figure
 plot(out.u(:,1),out.u(:,2), 'LineWidth', 1)
