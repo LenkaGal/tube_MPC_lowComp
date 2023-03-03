@@ -12,6 +12,7 @@
 \usepackage{amsmath} % assumes amsmath package installed
 \usepackage{amssymb}  % assumes amsmath package installed
 
+\usepackage{url}
 \usepackage{ae} % Nice Slovak symbols
 \usepackage{listings,lstautogobble} % Nice MATLAB source code
 \usepackage{matlab-prettifier}
@@ -45,12 +46,83 @@ Preparation of Papers for IEEE Sponsored Conferences \& Symposia
 
 [ TOOD: Write an Introduction ]
 
-Text~\cite{IEEEexample:hyperrefsty}.
 
 \section{Theoretical backgrounds}
 \label{sec:tube_mpc}
 
 [ TOOD: Write the theoretical backgrounds on Tube MPC. ]
+
+Consider an uncertain linear time-invariant (ULTI) system in the form:
+\begin{eqnarray}
+	\label{eq:ulti_system}
+	x(t+T_{\mathrm{s}}) = A x(t) + B u(t) + E d(t), % \quad x(0) = x_{0},
+\end{eqnarray}
+where $t$ stands for the time instant in the discrete-time domain determined by the given sampling time $T_{\mathrm{s}}$. $A \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{x}}}$ is system matrix, $B \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{u}}}$ is input matrix, such that the matrix pair $(A,B)$ is stabilizable. $E \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{w}}}$ is disturbance matrix, $x \in \mathbb{R}^{n_{\mathrm{x}}}$ is the vector of the system states, $u \in \mathbb{R}^{n_{\mathrm{u}}}$ is control action, $d \in \mathbb{D} \subset \mathbb{R}^{n_{\mathrm{x}}}$ is bounded additive disturbance such that $\mathbb{D}$ is compact set containing the origin. 
+
+For the sake of notation, in ULTI system~\eqref{eq:ulti_system} holds:
+\begin{eqnarray}
+	\label{eq:disturbance_set}
+	w = E \, d, ~ w \in \mathbb{W}, ~ \mathbb{W} = \left\{ w \in \mathbb{R}^{n_{\mathrm{x}}} : \Vert w \Vert_{\infty} \leq w_{\max} \right\}
+\end{eqnarray}
+for given upper bound value $w_{\max} = \Vert E \, d \Vert_{\infty}$, $\forall d \in \mathbb{D}$ such that $\mathbb{W} \supseteq E \, \mathbb{D}$ is the minimum volume hyper-box satisfying $\Vert w \Vert_{\infty} = w_{\max}$.
+
+The ``tube'' introduced into the MPC design is evaluated by the convex set $\mathbb{T} \subset \mathbb{R}^{n_{\mathrm{x}}}$ and represents the origin for the perturbed system, see~\cite{MS05}. 
+%
+By plugging the LQ-optimal controller into~\eqref{eq:ulti_system} and updating the additive disturbances per~\eqref{eq:disturbance_set}, we obtain an autonomous discrete-time uncertain system 
+\begin{equation}
+	\label{eq:autosys}
+	x(t+T_{\mathrm{s}}) = (A + BK)x(t) + w(t).
+\end{equation}
+Subsequently, if $\mathbb{T}$ is a robust positive invariant (RPI) set for~\eqref{eq:autosys}, then we have that following statement holds 
+\begin{eqnarray}
+	\label{eq:tube}
+	\left( A + B K \right) \mathbb{T} \oplus \mathbb{W} \subseteq \mathbb{T},
+\end{eqnarray}
+where $\oplus$ denotes the Minkowski sum.
+
+Obviously, $\mathbb{T}$ in \eqref{eq:tube} is constructed as the minimal RPI set to minimize the conservativeness of Tube MPC design by:
+\begin{eqnarray}
+	\label{eq:tube_design}
+	\mathbb{T} = \sum_{i=0}^{\infty} \left( A + B K \right)^{i} \mathbb{W},
+\end{eqnarray}
+where $\Sigma$ represents a set addition. However, if the $K$ is not a dead-beat controller, then the minimal RPI set $\mathbb{T}$ does not necessarily lead to the polytope, see~\cite{MS05}. Therefore, $\mathbb{T}$ is designed as the outer approximation of the minimal RPI set.  Algorithm constructing such invariant approximations of the minimal robust positively invariant set $\mathbb{T}$ is proposed in detail in~\cite{RK05}.
+
+The conventional (rigid) Tube MPC design problem has the form:
+\begin{subequations}
+	\label{eq:tmpc}
+	\begin{eqnarray}
+		\label{eq:tmpc_cost}
+		\min_{\hat{u}_{0},\ldots,\hat{u}_{N-1}, \hat{x}_{0},\ldots,\hat{x}_{N} } \!\!\!\!\!\!\!\!\!\!\! &\,& \Vert \hat{x}_{N} \Vert_{P}^{2} + \sum_{k=0}^{N-1} \left( \Vert \hat{x}_{k} \Vert_{Q}^{2} + \Vert \hat{u}_{k} \Vert_{R}^{2} \right) \qquad \\
+		\label{eq:tmpc_rpi}
+		&\,& \mathrm{s.t.} \quad x(t) - \hat{x}_{0} \in \mathbb{T} , \\
+		\label{eq:tmpc_model}
+		&\,& \qquad  \hat{x}_{k+1} = A \hat{x}_{k} + B \hat{u}_{k} , \\
+		\label{eq:tmpc_constraints_state}
+		&\,& \qquad \hat{x}_{k} \in \mathbb{X} \ominus \mathbb{T} , \\
+		\label{eq:tmpc_constraints_terminal}
+		&\,& \qquad \hat{x}_{N} \in \mathbb{X}_{\mathrm{N}}, \\
+		\label{eq:tmpc_constraints_input}
+		&\,& \qquad \hat{u}_{k} \in \mathbb{U} \ominus K \, \mathbb{T} , \\
+		\label{eq:tmpc_constraints_input_delta_k}
+		&\,& \qquad \Delta \hat{u}_{k} \in \mathbb{U}_{\Delta} \ominus K \, \mathbb{T} , \\
+		\label{eq:tmpc_constraints_input_delta_0}
+		&\,& u(t)- u(t_{-}) + K ( x(t) - \hat{x}_{0} ) \in \mathbb{U} , \quad
+	\end{eqnarray}
+\end{subequations}
+%	where $\hat{x}_{0}$ and $\hat{u}_{k}$ are the predicted states and inputs, respectively, for all  $k = 1, \ldots, N-1$, where $N$ denotes the prediction horizon.
+for all steps $\forall k = 1, \dots, N-1$ along the prediction horizon $N$.
+The decision variables\footnote{Obviously, dense formulation of~\eqref{eq:tmpc} omits $\hat{x}_{k}$ as the decision variables, except for $\hat{x}_{0}$.} $\hat{u}_{k}$, $\hat{x}_{k}$, are optimized subject to the nominal system behaviour in~\eqref{eq:tmpc_model}, i.e., an idealized system without the impact of any uncertain parameters. The state and input constraints in~\eqref{eq:constraints_x_u} are respectively adopted in~\eqref{eq:tmpc_constraints_state}, \eqref{eq:tmpc_constraints_input} to respect the RPI set $\mathbb{T}$ in~\eqref{eq:tube} assuming: $(\mathbb{X} \ominus \mathbb{T})$, $(\mathbb{U} \ominus K \, \mathbb{T})$ are non-empty sets, convex by definition. Analogous, the initial condition in~\eqref{eq:tmpc_rpi} takes into account the RPI set $\mathbb{T}$ keeping the perturbed system state vector $x(t)$ close to its nominal counterpart $\hat{x}_{0}$. 
+The terminal constraint in~\eqref{eq:tmpc_constraints_terminal} has the conventional form.
+The quadratic cost function in~\eqref{eq:tmpc_cost} is minimized considering the $Q$, $R$, $P$. Note, $\Vert \hat{x}_{N} \Vert_{P}^{2}$ denotes simplified notation for the weighted two norm: $\hat{x}_{N}^{\top} P \hat{x}_{N}$, and analogous hold for the remaining terms. 
+The corresponding stability and recursive feasibility proofs of~\eqref{eq:tmpc} are documented in~\cite{MS05}.
+
+The control action $u(t)$, which is applied to the controlled plant in~\eqref{eq:ulti_system}, is determined by the control law $\kappa : \mathbb{X}_{\mathrm{F}} \rightarrow \mathbb{U}$
+\begin{eqnarray}
+	\label{eq:tmpc_control_law}
+	\kappa(x(t)) = \hat{u}_{0}^{\star} + K \left( x(t) - \hat{x}_{0}^{\star} \right),
+\end{eqnarray}
+where $\star$ denotes the solution of the optimization problem in~\eqref{eq:tmpc} and $\mathbb{X}_{\mathrm{F}} \subseteq \mathbb{R}^{n_{\mathrm{x}}}$ is the corresponding domain, i.e., the feasibility set of the optimized initial conditions $\hat{x}_{0}$ of~\eqref{eq:tmpc}. 
+Tube MPC is implemented in receding horizon fashion, i.e., just the first control action $u(t) = \kappa(x(t))$ is applied to the plant and the optimization problem in~\eqref{eq:tmpc} is re-computed in each control step. 
 
 \section{The software package}
 \label{sec:code}
@@ -61,6 +133,81 @@ Text~\cite{IEEEexample:hyperrefsty}.
 \label{sec:code_mptplus}
 
 [ TOOD: Describe an MPT+ package. ]
+
+\subsection{Advanced methods for explicit Tube MPC controllers}
+\label{sec:advanced_method}
+
+% [ TODO: Write about the advanced methods of the MPT toolbox available for Tube MPC. ]
+This section lists the current compatibility\footnote{The package \texttt{MPTplus} is still under development and further extensions are expected, soon.} of \texttt{MPTplus} with \texttt{MPT}. 
+%
+Since the implicit MPC policy \verb|TMPC| is currently restricted only to evaluation via \verb|TMPC.optimizer(x)|, for any feasible state vector $x\in\mathbb{X}_{\mathrm{F}}$, we devote this section to its explicit counterpart \verb|ETMPC|.
+
+Assume that from the previous Section~\ref{sec:construction} we have defined \verb|model|, i.e., object that contains prediction model~\eqref{eq:example_ulti_system} as in~\eqref{eq:tmpc_model}, constraints~\eqref{eq:constraints_x_u} transformed into~\eqref{eq:tmpc_constraints_state}-\eqref{eq:tmpc_constraints_input}, penalty matrices, the appertain LQR terminal penalty and terminal set as in~\eqref{eq:tmpc_cost} and~\eqref{eq:tmpc_constraints_terminal}, respectively. 
+%
+Using the \texttt{MPTplus}, we may simply construct both, non-explicit and explicit Tube MPC controllers\footnote{The current version of \texttt{MPTplus} always displays for explicit Tube MPC controller confusing information on the prediction horizon $N=1$, although the controller is constructed correctly for any value of $N$.}. To design explicit MPC policy that returns the control action as in~\eqref{eq:tmpc_control_law}, i.e., that is fed directly to the controlled system in~\eqref{eq:ulti_system}, we can evoke:
+\begin{lstlisting}[style=Matlab-editor]
+ops = {'eMPC',1}
+[~,ETMPC] = TMPCController(model,N,ops)
+\end{lstlisting}
+what constructs explicit controller \verb|ETMPC| that is defined over $n_\text{r} = 565$ critical regions in $n_\text{x} = 2$ dimensional space.
+
+To graphically analyze our explicit controller, we can type:
+\begin{lstlisting}[style=Matlab-editor]
+	figure; ETMPC.partition.plot()
+	figure; ETMPC.feedback.fplot()
+	figure; ETMPC.cost.fplot()
+\end{lstlisting}
+to plot the polytopic partition~\eqref{eq:tmpc_partition}, the PWA feedback law~\eqref{eq:tmpc_control_law_pwa}, and the PWQ value function as defined in~\eqref{eq:tmpc_cost}, respectively.\footnote{We note that while both, the PWA feedback law and the PWQ value function, are given as solution to~\eqref{eq:tmpc} the solution~\eqref{eq:tmpc_control_law_pwa_particular} was posterior transformed into~\eqref{eq:tmpc_control_law_pwa}, however, the value function preserves its form of~\eqref{eq:tmpc_cost}.}
+
+To perform a closed-loop simulation of a computed explicit Tube MPC controller one can define an object:
+\begin{lstlisting}[style=Matlab-editor]
+	loop = ClosedLoop(ETMPC,model)
+\end{lstlisting}
+where \verb|model| can contain even a modified version of~\eqref{eq:example_ulti_system}, i.e., the controlled system can be different from the prediction model used to design the explicit policy \verb|ETMPC|. Subsequently, we can execute the closed-loop simulation by:
+\begin{lstlisting}[style=Matlab-editor]
+	Nsim = 10
+	data = loop.simulate(x0, Nsim)
+\end{lstlisting}	
+with \verb|x0| denoting the initial condition and \verb|Nsim| number of the closed-loop simulation steps. The generated \verb|data| structure contains all important information, e.g., the closed-loop profiles of control inputs \verb|data.U|, applied disturbances \verb|data.D|, states \verb|data.X|, and the cost of~\eqref{eq:tmpc_cost} at each time step, to name a few.
+Alternatively, one can create a customized loop, where the control input of \verb|ETMPC| can be obtained by typing: 
+\begin{lstlisting}[style=Matlab-editor]
+	u = ETMPC.evaluate(x)
+\end{lstlisting}
+for any given feasible state vector $x\in\mathbb{X}_{\mathrm{F}}$.
+%
+Finally, if only pure visual analysis of a closed-loop simulation is required then we encourage users to use
+\begin{lstlisting}[style=Matlab-editor]
+	ETMPC.clicksim()
+\end{lstlisting}
+where initial state conditions are defined by the mouse.
+%
+%	Finally, for more rigorous verification of closed-loop stability we encourage a user to create a Lyapunov function $V$ that provides $V(x(k))>0$, $V(0)=0$, $V(x(k+1)) \leq \gamma V(x(k))$ for all $x(k) \in \mathbb{X}_{\mathrm{F}}$, some $\gamma \in [0,1)$, and all $k \geq 0$. This can be done easily by 
+%	\begin{lstlisting}[style=Matlab-editor]
+	%		lyap = loop.toSystem.lyapunov(type)
+	%	\end{lstlisting}
+
+Another interesting group of \texttt{MPT} features is the module \texttt{LowCom}~\cite{KH15} that provides various complexity reduction techniques of explicit MPC policies. In this paper, we list techniques that do not induce suboptimality\footnote{Currently, complexity reduction schemes that introduce suboptimality are not compatible with the Tube MPC.}.
+
+The Optimal Region Merging (ORM) method aims to join critical regions with the same closed-loop feedback policy and whose union is a convex set. This method can be called: 
+\begin{lstlisting}[style=Matlab-editor]
+ETMPCsim = ETMPC.simplify('orm')
+\end{lstlisting}
+where \verb|ETMPCsim| is the constructed simplified controller. In our setup, this technique found $158$ critical regions that were merged. Hence, we have reduced the complexity by $28\%$ as the number of critical regions dropped from $565$ to $407$. 
+
+%
+%	The clipped-based method targets to achieve complexity reduction by removing all critical regions with saturated control law. Subsequently, to cover the entire original polytopic partition $\mathbb{X}_{\mathrm{F}}$, critical regions with unsaturated control law are extended and a clipping filter is introduced. This method can be called by 
+%	\begin{lstlisting}[style=Matlab-editor]
+	%	simpleETMPC = ETMPC.simplify('clipping')
+	%	\end{lstlisting}
+%	where \verb|simpleETMPC| denotes the resulting simplified controller. With our setup, 
+%
+The separation-based method targets to reduce the complexity of explicit controllers by removing all critical regions that lead to the saturated control laws, i.e., $u(t)$ that lay on the boundary of $\mathbb{U}$. Once this is done, a separation filter is constructed to identify optimal control actions above the removed critical regions. This simplification method is called:
+\begin{lstlisting}[style=Matlab-editor]
+ETMPCsim = ETMPC.simplify('separation')
+\end{lstlisting}
+where \verb|ETMPCsim| denotes the resulting simplified controller. With the considered control setup, the separation-based controller has removed all $120$ regions with saturated feedback law which represents the reduction of $21\%$ w.r.t. its complex counterpart \verb|ETMPC|.
+
+Needlessly to say, there are many advanced methods that can be used on top of the \verb|ETMPC| object that, due to paper limitations, can not be listed here. All interested readers are hence referred to the dedicated \texttt{MPT} website: \\ \texttt{\url{https://www.mpt3.org}}.
 
 \subsection{LowCom}
 \label{sec:code_mpt3lowcom}
@@ -124,8 +271,8 @@ The authors gratefully acknowledge the contribution of the Scientific Grant Agen
 
 
 \bibliographystyle{IEEEtran} % use IEEEtran.bst style
-\bibliography{IEEEexample}
-
+% \small
+\bibliography{references}
 
 
 \end{document}
