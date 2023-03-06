@@ -1,36 +1,20 @@
 yalmip('clear')
 clear all
-close all
+% close all
 
 %% MPC Class
 % mpc_setup.explicit = true; % Explicit
 mpc_setup.explicit = false; % Implicit MPC
 
 %% Model data
-Z = 0.6342;
-T = 0.2926;
-
-Ts = 0.01;
-Ac = -1/T;
-Bc = Z/T;
-Cc = 1;
-Dc = 0;
-syss = ss(Ac,Bc,Cc,Dc);
-
-syssd = c2d(syss,Ts);
-A = syssd.A;
-B = syssd.B;
-C = syssd.C;
-D = syssd.D;
-
-us = [40];
-ys = [68];
+A = [1, 1; 0, 1];
+B = [0.5; 1]; 
 
 %% Disturbance/additive uncertainty
 % w_min = [-0.15; -0.15];
 % w_max = [0.15; 0.15];
-w_min = [-1];
-w_max = [1];
+w_min = [-0.1; -0.1];
+w_max = [0.1; 0.1];
 W = Polyhedron('lb', w_min, 'ub', w_max);
 
 figure(10)
@@ -41,35 +25,35 @@ W.plot
 % x0 = [3; 1];
 % x0 = [-7; -2];
 % x0 = [-10; -1.5];
-x0 = 0-ys;
+x0 = [-5; -2];
 
 %% Physical constraints
-u_min = 0-us;
-u_max = 100-us;
+u_min = -1;
+u_max =  1;
 % x_min = [-5; -5];
 % x_max = [5; 5];
-x_min = [0-ys];
-x_max = [100-ys];
+x_min = [-1e2; -2];
+x_max = [ 1e2;  2];
 
 %% Delta-u constraints
 % model.u.with('deltaMin');
 % model.u.with('deltaMax');
 % model.u.deltaMin = -7;
 % model.u.deltaMax = 7;
-du_min = -55
-du_max =  55
+du_min = -0.5
+du_max =  0.5
 
 %% Problem size
 nx = size(A,1); % Number of states
 nu = size(B,2); % Number of inputs
 
 %% MPC data
-Q = diag(10); % State penalty
+Q = eye(nx); % State penalty
 % R = 0.1*eye(nu); % Input penalty
-R = 1*eye(nu); % Input penalty
+R = 0.01*eye(nu); % Input penalty
 % R = 1*eye(nu); % Input penalty
 % N = 10; % Prediction horizon
-N = 30; % Prediction horizon
+N = 9; % Prediction horizon
 
 %% Constraints handling
 Sx = Polyhedron('lb',x_min,'ub',x_max);
@@ -86,7 +70,6 @@ Sdu = Polyhedron('lb',du_min,'ub',du_max);
 
 %% LQR controller
 [Klqr, Plqr] = dlqr(A, B, Q, R);
-global K
 K = -Klqr;
 
 %% Robust positive invariant set
@@ -128,16 +111,14 @@ subplot(2,2,1), hold on
 Xc.plot('Color','b')
 
 %% Input constraints robustification
-UC = ( -K*Z );
-Uc = Su - UC;
+Uc = Su - ( K*Z );
 figure(10)
 subplot(2,2,2), hold on
 Uc.plot('Color','b')
 
 %% Delta-U Input constraints robustification
-UdC = -K*Z;
-Udc = Sdu - UdC;
-% Sdu = Polyhedron('lb',du_min,'ub',du_max);
+Udc = Sdu - ( K*Z );
+Sdu = Polyhedron('lb',du_min,'ub',du_max);
 figure(100), hold on, box on, title('Delta-U constraints')
 Sdu.plot('Color','r')
 Udc.plot('Color','b')
@@ -158,7 +139,8 @@ constraints = [ x{1} == X0 ]; % to generate an OPTIMIZER object
 constraints = [ constraints, x_min <= X0 <= x_max ]; 
 constraints = [ Z.A*( X0 - x{1} ) <= Z.b ];
 % constraints = [ -Z.A* x{1} <= ( Z.b - Z.A*X0) ];
-constraints = [constraints, Sdu.A*(u{1}+ K*( X0 - x{1} ) - u_prev) <= Sdu.b ];
+% constraints = [constraints, Sdu.A*(u{1}+ K*( X0 - x{1} ) - u_prev) <= Sdu.b ];
+constraints = [constraints, Udc.A*(u{1} - u_prev) <= Udc.b ];
 
 % Constraints for k = 0,...,N-1
 for k = 1:N
@@ -197,7 +179,6 @@ if( mpc_setup.explicit == true )
     [ mpsol ] = get_explicit_partition( mpsol );
 else
     %% Implicit MPC
-    global ImplicitOptimizer
     disp(sprintf(' Implicit MPC design:'))
     ImplicitOptimizer = optimizer(constraints, objective, opt_settings, [X0; u_prev], [u{1}; x{1}]);
 end
@@ -209,7 +190,7 @@ Unominal = [];
 Xnominal = [ x0 ];
 Udata = [];
 Xdata = [ X ];
-Utube = 0-us;
+Utube = 0;
 for k = 1 : Nsim
     X = Xdata(:,k);
     if( mpc_setup.explicit == true )
@@ -241,19 +222,19 @@ figure(2),
 subplot(2,1,1), box on, hold on, xlabel('k'), ylabel('x')
 stairs([0 , size(Xdata,2)-1], [0,0], 'k:')
 stairs([0 : size(Xdata,2)-1], Xdata(1,:))
-% stairs([0 : size(Xdata,2)-1], Xdata(2,:))
+stairs([0 : size(Xdata,2)-1], Xdata(2,:))
 subplot(2,1,2), box on, hold on, xlabel('k'), ylabel('u')
 stairs([0 : size(Udata,2)-1],Udata(1,:))
 stairs([0 , size(Udata,2)-1], [ u_min, u_min], 'k--' )
 stairs([0 , size(Udata,2)-1], [ u_max, u_max], 'k--' )
 
-% figure(3), hold on, box on, title('State trajectory'), xlabel('x_1'), ylabel('x_2')
+figure(3), hold on, box on, title('State trajectory'), xlabel('x_1'), ylabel('x_2')
 % Show Feasibility set
 % mpsol{1}.Pfinal.plot('Color',[0.95, 0.95, 0.95]) % NOTE: Feasibility set for the conservative Tube MPC
-% plot( Tset, 'Color',[0.9, 0.9, 0.9] )
-% for k = 1 : size(Xnominal,2)
+plot( Tset, 'Color',[0.9, 0.9, 0.9] )
+for k = 1 : size(Xnominal,2)
     % plot( Z + [ Xdata(:,k) ], 'Color',[0.7, 0.7, 0.7] )
-%     plot( Z + [ Xnominal(:,k) ], 'Color',[0.7, 0.7, 0.7] )
-% end
-% plot(Xnominal(1,:),Xnominal(2,:),'kx:','LineWidth', 2, 'MarkerSize', 6)
-% plot(Xdata(1,:),Xdata(2,:),'k*--','LineWidth', 2, 'MarkerSize', 6)
+    plot( Z + [ Xnominal(:,k) ], 'Color',[0.7, 0.7, 0.7] )
+end
+plot(Xnominal(1,:),Xnominal(2,:),'kx:','LineWidth', 2, 'MarkerSize', 6)
+plot(Xdata(1,:),Xdata(2,:),'k*--','LineWidth', 2, 'MarkerSize', 6)
