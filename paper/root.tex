@@ -18,13 +18,13 @@
 \usepackage{matlab-prettifier}
 
 \title{\LARGE \bf
-Software package for industrial-oriented MPC design and tuning
+A software package for MPC design and tuning: MPT+
 }
 
 \author{Juraj Holaza, Lenka Gal\v{c}\'{i}kov\'{a}, Juraj Oravec, Michal Kvasnica
 \thanks{Authors are with Faculty of Chemical and Food Technology,
 		Slovak University of Technology in Bratislava, Bratislava, SK-812 37, Slovakia
-        {\tt\small albert.author@papercept.net}}
+        \texttt{lenka.galcikova@stuba.sk}}
 }
 
 \begin{document}
@@ -132,6 +132,34 @@ The control action $u(t)$, which is applied to the controlled plant in~\eqref{eq
 where $\star$ denotes the solution of the optimization problem in~\eqref{eq:tmpc} and $\mathbb{X}_{\mathrm{F}} \subseteq \mathbb{R}^{n_{\mathrm{x}}}$ is the corresponding domain, i.e., the feasibility set of the optimized initial conditions $\hat{x}_{0}$ of~\eqref{eq:tmpc}. 
 Tube MPC is implemented in receding horizon fashion, i.e., just the first control action $u(t) = \kappa(x(t))$ is applied to the plant and the optimization problem in~\eqref{eq:tmpc} is re-computed in each control step. 
 
+
+The output feedback Tube MPC design problem has the form:
+\begin{subequations}
+	\label{eq:tmpc_output}
+	\begin{eqnarray}
+		\label{eq:tmpc_output_cost}
+		\min_{\hat{u}_{0},\ldots,\hat{u}_{N-1}, \hat{x}_{0},\ldots,\hat{x}_{N} } \!\!\!\!\!\!\!\!\!\!\! &\,& \Vert \hat{x}_{N} \Vert_{P}^{2} + \sum_{k=0}^{N-1} \left( \Vert \hat{x}_{k} \Vert_{Q}^{2} + \Vert \hat{u}_{k} \Vert_{R}^{2} \right) \qquad \\
+		\label{eq:tmpc_output_rpi}
+		\mathrm{s.t.\!:} &\,& x(t) - \hat{x}_{0} \in \mathbb{T}_{\mathrm{x}} , \\
+		\label{eq:tmpc_output_model}
+		&\,&  \hat{x}_{k+1} = A \hat{x}_{k} + B \hat{u}_{k} , \\
+		\label{eq:tmpc_output_constraints_state}
+		&\,& \hat{x}_{k} \in \mathbb{X} \ominus \mathbb{T} , \\
+		\label{eq:tmpc_output_constraints_terminal}
+		&\,& \hat{x}_{N} \in \mathbb{X}_{\mathrm{N}}, \\
+		\label{eq:tmpc_output_constraints_input}
+		&\,& \hat{u}_{k} \in \mathbb{U} \ominus K \, \mathbb{T}_{\mathrm{x}} , \\
+		% \label{eq:tmpc_output_constraints_input_delta_k}
+		% &\,& \Delta \hat{u}_{l} \in \mathbb{U}_{\Delta} \ominus K \, \mathbb{T} , \\
+		\label{eq:tmpc_output_constraints_input_delta_0}
+		&\,& \hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U}_{\Delta} , \quad
+	\end{eqnarray}
+\end{subequations}
+where $\forall k = 0, \dots, N-1$,  $\forall l = 1, \dots, N-1$, $N$ is prediction horizon.
+
+$\mathbb{T} = \mathbb{T}_{\mathrm{y}} \oplus \mathbb{T}_{\mathrm{x}}$
+
+
 \section{The software package}
 \label{sec:code}
 
@@ -161,9 +189,9 @@ what constructs explicit controller \verb|ETMPC| that is defined over $n_\text{r
 
 To graphically analyze our explicit controller, we can type:
 \begin{lstlisting}[style=Matlab-editor]
-	figure; ETMPC.partition.plot()
-	figure; ETMPC.feedback.fplot()
-	figure; ETMPC.cost.fplot()
+figure; ETMPC.partition.plot()
+figure; ETMPC.feedback.fplot()
+figure; ETMPC.cost.fplot()
 \end{lstlisting}
 to plot the polytopic partition~\eqref{eq:tmpc_partition}, the PWA feedback law~\eqref{eq:tmpc_control_law_pwa}, and the PWQ value function as defined in~\eqref{eq:tmpc_cost}, respectively.\footnote{We note that while both, the PWA feedback law and the PWQ value function, are given as solution to~\eqref{eq:tmpc} the solution~\eqref{eq:tmpc_control_law_pwa_particular} was posterior transformed into~\eqref{eq:tmpc_control_law_pwa}, however, the value function preserves its form of~\eqref{eq:tmpc_cost}.}
 
@@ -173,19 +201,19 @@ To perform a closed-loop simulation of a computed explicit Tube MPC controller o
 \end{lstlisting}
 where \verb|model| can contain even a modified version of~\eqref{eq:example_ulti_system}, i.e., the controlled system can be different from the prediction model used to design the explicit policy \verb|ETMPC|. Subsequently, we can execute the closed-loop simulation by:
 \begin{lstlisting}[style=Matlab-editor]
-	Nsim = 10
-	data = loop.simulate(x0, Nsim)
+Nsim = 10
+data = loop.simulate(x0, Nsim)
 \end{lstlisting}	
 with \verb|x0| denoting the initial condition and \verb|Nsim| number of the closed-loop simulation steps. The generated \verb|data| structure contains all important information, e.g., the closed-loop profiles of control inputs \verb|data.U|, applied disturbances \verb|data.D|, states \verb|data.X|, and the cost of~\eqref{eq:tmpc_cost} at each time step, to name a few.
 Alternatively, one can create a customized loop, where the control input of \verb|ETMPC| can be obtained by typing: 
 \begin{lstlisting}[style=Matlab-editor]
-	u = ETMPC.evaluate(x)
+u = ETMPC.evaluate(x)
 \end{lstlisting}
 for any given feasible state vector $x\in\mathbb{X}_{\mathrm{F}}$.
 %
 Finally, if only pure visual analysis of a closed-loop simulation is required then we encourage users to use
 \begin{lstlisting}[style=Matlab-editor]
-	ETMPC.clicksim()
+ETMPC.clicksim()
 \end{lstlisting}
 where initial state conditions are defined by the mouse.
 %
