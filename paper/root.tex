@@ -48,11 +48,46 @@ A software package for MPC design and tuning: MPT+
 
 [ TOOD: Write an Introduction ]
 
+% MOVED
+Following is a brief review of the MPC design software limited just for the tools offering an interface for the \texttt{MATLAB}\footnote{\texttt{MATLAB}, MathWorks, Inc.: \texttt{\url{https://www.mathworks.com}}} programming environment. We refer the reader to~\cite{KF18,LT17, OSQP,QPALM,qpDUNES,Ferreau2014,HPIPM,CVXGEN,EJ21,HS22}, and the references therein, for the tailored solvers and tools supporting MPC design and its evaluation using also other programming environments, e.g., \texttt{Python}\footnote{\texttt{Python}, Python Software Foundation: \texttt{\url{https://www.python.org}}}, \texttt{Julia} \footnote{\texttt{Julia}, JuliaLang.org: \texttt{\url{https://julialang.org}}}, etc.
+% \texttt{Python}~\cite{PYTHON}, \texttt{Julia}~\cite{JULIA}, etc.
+
+Commercial \texttt{MPC Toolbox}~\cite{MPC_toolbox} for \texttt{MATLAB} addresses various classes of the MPC design problems, including the construction of the adaptive, explicit, gain-scheduled, and non-linear MPC controllers. This toolbox provides several built-in solvers and also a dedicated user interface \texttt{MPC Designer App} for the controller tuning. 
+%
+The non-linear MPC design problems are efficiently solved using the \texttt{ACADO Toolkit}~\cite{ACADO_Toolkit}. The non-convex optimization problem is solved by the sequential quadratic programming (SQP) approach.  \texttt{ACADO Toolkit} evaluates the library-dependent \texttt{C/C++} code and provides an interface for \texttt{MATLAB}. 
+%
+\texttt{CasADi}~\cite{CasADi} represents another toolbox suitable for the non-liner MPC design. This open-source package also provides the interfaces for \texttt{MATLAB} and \texttt{Python}. 
+%
+The non-linear MPC can be designed also using the open-source toolbox \texttt{MATMPC}~\cite{MATMPC}. 
+%
+\texttt{YALMIP}~\cite{L04} toolbox is a widely-used modelling parser focused on the various classes of optimization problems, including non-convex optimization. \texttt{YALMIP} provides also support for the MPC design problems. 
+%
+Similar to \texttt{YALMIP} toolbox, the \texttt{CVX}~\cite{GB08} is focused on the modelling of the various classes of convex optimization problems suitable for MPC controller design. 
+
+[ TODO: Introduce MPT ]
+
+\texttt{MPT} module \texttt{LowCom}~\cite{KH15} introduces the set of methods reducing the complexity of the explicit solution maps associated with the MPC controllers.
+
+[ TODO: Introduce Tube MPC ]
+
+Moreover, Tube MPC represents a natural step towards the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, Tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
+
+[ TODO: Reformulate: ]
+
+We present the new package \texttt{MPTplus} extending the original \texttt{MPT} toolbox by the ability to design, tune, and validate both, non-explicit (implicit) and explicit Tube MPC controllers in a memory-efficient and user-friendly way.
+Next, we provide an extensive case study investigating the benefits of the developed package considering the advanced robust control of the laboratory device Flexy~\cite{CK19}. 
 
 \section{Theoretical backgrounds}
-\label{sec:tube_mpc}
+\label{sec:tube_mpc_theory}
 
 [ TOOD: Write the theoretical backgrounds on Tube MPC. ]
+
+[ TODO: Reformulate ]
+
+This section briefly reviews the main theoretical backgrounds of the original (rigid) Tube MPC design approach proposed in~\cite{MS05} and its formulation considering multi-parametric optimization.
+
+\subsection{Tube MPC design}
+\label{sec:tube_mpc}
 
 Consider an uncertain linear time-invariant (ULTI) system in the form:
 \begin{eqnarray}
@@ -159,6 +194,41 @@ where $\forall k = 0, \dots, N-1$,  $\forall l = 1, \dots, N-1$, $N$ is predicti
 
 $\mathbb{T} = \mathbb{T}_{\mathrm{y}} \oplus \mathbb{T}_{\mathrm{x}}$
 
+\subsection{Explicit Tube MPC}
+\label{sec:explicit_mpc}
+
+% [ TODO: Write about explicit Tube MPC. ]
+The main benefit of explicit MPC is its ability to significantly speed up the real-time evaluation of the optimal control action by pre-computing the optimization problem in advance, see~\cite{BM02}. Simultaneously, the explicit solution provides the possibility for rigorous analysis, verification, and certification of the designed control law. 
+
+The QP in~\eqref{eq:tmpc} can be reformulated into the explicit MPC design framework by evaluating the initial condition in~\eqref{eq:tmpc_rpi} exploring the set of admissible initial conditions: $\Theta = \mathbb{X} \ominus \mathbb{T}$. Then, the solution of corresponding multi-parametric QP (mpQP) returns also the convex set of feasible system states $\mathbb{X}_{\mathrm{F}} \subseteq \Theta$ defined as the explicit solution map:
+\begin{eqnarray}
+	\label{eq:tmpc_partition}
+	\mathbb{X}_{\mathrm{F}} = \bigcup_{i}^{n_{\mathrm{r}}} \mathcal{P}_{i} ,
+\end{eqnarray}
+where $\mathcal{P}_{i}$ are polytopes, i.e., critical regions, and $n_{\mathrm{r}}$ is the total number of critical regions.
+
+As the consequence, for $x(t) \in \mathcal{P}_{i}$ denoting $i$th critical region, holds control law in~\eqref{eq:tmpc_control_law} given in a form of
+piece-wise affine (PWA) functions corresponding to the particular decision variables:
+\begin{subequations}
+	\label{eq:tmpc_control_law_pwa_particular}
+	\begin{eqnarray}
+		\label{eq:tmpc_control_law_pwa_particular_x}
+		\hat{x}^{\star}(x(t)) \!\!\!\!&=&\!\!\!\! F_{\mathrm{x},i} \, x(t) + g_{\mathrm{x},i} \quad \text{if} \quad x(t) \in \mathcal{P}_{i}, \\
+		\label{eq:tmpc_control_law_pwa_particular_u}
+		\hat{u}^{\star}(x(t)) \!\!\!\!&=&\!\!\!\! F_{\mathrm{u},i} \, x(t) + g_{\mathrm{u},i} \quad \text{if} \quad x(t) \in \mathcal{P}_{i},
+	\end{eqnarray}
+\end{subequations}
+where $F_{\mathrm{x},i}$, $F_{\mathrm{u},i}$, $g_{\mathrm{x},i}$, $g_{\mathrm{u},i}$ have appropriate dimensions. For further technical details see~\cite{BM02}. 
+Analogous to~\cite{ZT14}, we re-formulate the control law of the explicit Tube MPC in~\eqref{eq:tmpc_control_law_pwa_particular} into the compact form:
+\begin{eqnarray}
+	\label{eq:tmpc_control_law_pwa}
+	\kappa(x(k)) = \underbrace{ \left( K + F_{\mathrm{x},i} + F_{\mathrm{u},i} \right) }_{ F_{i} } x(k) + \underbrace{ \left( g_{\mathrm{u},i} - K g_{\mathrm{x},i} \right) }_{ g_{i} } ,
+\end{eqnarray}
+We point out, that such a compact formulation significantly reduces the associated memory footprint necessary to store the PWAs compared to the conventional explicit formulation in~\eqref{eq:tmpc_control_law_pwa_particular}.  
+%
+To be specific, the feedback law in~\eqref{eq:tmpc_control_law_pwa} saves $3\,n_\text{x}$ double precision numbers per each critical region compared to the original form~\eqref{eq:tmpc_control_law_pwa_particular_x}.
+%
+%	The memory savings related to storage of the set of $n_{\mathrm{r}}$ matrix pairs $(F_{\mathrm{x},i}, F_{\mathrm{u},i})$ compared to $F_{i}$ is, roughly, decreased by factor 2, and further savings related to pairs of vectors $(g_{\mathrm{x},i}, g_{\mathrm{u},i})$ compared to $g_{i}$ corresponds to $( n_{\mathrm{r}} \times n_{\mathrm{x}} )$ double-precision numbers.
 
 \section{The software package}
 \label{sec:code}
@@ -245,6 +315,8 @@ where \verb|ETMPCsim| denotes the resulting simplified controller. With the cons
 
 Needlessly to say, there are many advanced methods that can be used on top of the \verb|ETMPC| object that, due to paper limitations, can not be listed here. All interested readers are hence referred to the dedicated \texttt{MPT} website: \\ \texttt{\url{https://www.mpt3.org}}.
 
+[ TODO: How about: \texttt{clipping}, \texttt{Lyapunov}: \texttt{lyap = loop.toSystem.lyapunov(type)} ? ]
+
 \subsection{LowCom}
 \label{sec:code_mpt3lowcom}
 
@@ -296,6 +368,8 @@ Three & Four\\
 \label{sec:conclusions}
 
 [ TOOD: Summarize the main conclusions. ]
+
+The paper presented a detailed tutorial for Tube MPC design using the novel package extension for \texttt{MPT} toolbox. 
 
 \addtolength{\textheight}{-12cm}
 
