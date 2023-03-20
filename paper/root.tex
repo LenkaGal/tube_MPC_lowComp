@@ -5,7 +5,7 @@
 \overrideIEEEmargins
 
 % The following packages can be found on http:\\www.ctan.org
-\usepackage{graphics} % for pdf, bitmapped graphics files
+\usepackage{graphicx} % for pdf, bitmapped graphics files
 %\usepackage{epsfig} % for postscript graphics files
 %\usepackage{mathptmx} % assumes new font selection scheme installed
 %\usepackage{times} % assumes new font selection scheme installed
@@ -324,8 +324,8 @@ Needlessly to say, there are many advanced methods that can be used on top of th
 
 \section{Case Study}
 \label{sec:case_study}
-
-[ TOOD: Write a laboratory case study on Flexy control. ]
+To provide experimental results presenting the proposed tools, the case study was realized on a simple dynamical SISO system called Flexy2 (TODO: Fig). The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
+by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend in percentage is assumed as the controlled variable, and the fan speed in percentage is a manipulated variable. The goal was to control the sensor bend to a steady-state value and reject the disturbance.
 
 \subsection{Control setup}
 \label{sec:control_setup}
@@ -335,7 +335,21 @@ Needlessly to say, there are many advanced methods that can be used on top of th
 \subsection{Results and discussion}
 \label{sec:results}
 
-[ TOOD: Discuss the results. ]
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{images/deltaU_y.eps}
+		\caption{Tube MPC with $\Delta - u$ constraints. Trajectory of controlled variable.}
+		\label{fig:deltaU_y}
+	\end{center}
+\end{figure}
+
+
+\begin{figure}[thpb]
+	\centering
+	\framebox{\includegraphics[scale=0.5]{images/deltaU_u.eps}}      
+	\caption{Tube MPC with $\Delta - u$ constraints. Trajectory of manipulated variable.}
+	\label{fig:deltaU_u}
+\end{figure}
 
 \subsection{Figures and Tables}
 
@@ -352,18 +366,8 @@ Three & Four\\
 \end{tabular}
 \end{center}
 \end{table}
-
-
-\begin{figure}[thpb]
-      \centering
-      \framebox{\parbox{3in}{We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.
-}}
-      %\includegraphics[scale=1.0]{figurefile}
-      \caption{Inductance of oscillation winding on amorphous
-       magnetic core versus DC bias magnetic field}
-      \label{figurelabel}
-   \end{figure}
-   
+	
+ 
 \section{Conclusions}
 \label{sec:conclusions}
 
