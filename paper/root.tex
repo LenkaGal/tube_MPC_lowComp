@@ -325,7 +325,46 @@ Needlessly to say, there are many advanced methods that can be used on top of th
 \section{Case Study}
 \label{sec:case_study}
 To provide experimental results presenting the proposed tools, the case study was realized on a simple dynamical SISO system called Flexy2 (TODO: Fig). The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
-by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend in percentage is assumed as the controlled variable, and the fan speed in percentage is a manipulated variable. The goal was to control the sensor bend to a steady-state value and reject the disturbance.
+by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend in percentage is assumed as the controlled variable, and the fan speed in percentage is a manipulated variable. The goal was to control the flex sensor bend to a steady-state value and reject the disturbance.
+
+The model of the system was obtained through experimental identification. The matrices of the nominal state-space system, discretized with sampling time $T_\mathrm{s} = 0.01$\,s are:
+\begin{subequations}
+	\label{eq:model_A_B} 
+	\begin{eqnarray}
+		A &=& \begin{bmatrix}
+			0.966
+		\end{bmatrix}, \\
+		B &=& \begin{bmatrix}
+			0.021
+		\end{bmatrix}. 
+	\end{eqnarray}
+\end{subequations}
+
+As the controlled as well as the manipulated variable were set in percentage, their values were constrained in the MPC optimization problem from $0\%$ to $100\%$. Considering the steady-state values where the model was linearized, i.e., $ u = 40\%$ and $ y = 68\%$, the constraints were set as follows: 
+\begin{subequations}
+	\label{eq:const_u_y} 
+	\begin{eqnarray}
+	\label{eq:const_u}
+	-40\% \le u \le 60\%, \\
+	\label{eq:const_y}
+	-68\% \le y \le 32\%.
+	\end{eqnarray}
+\end{subequations}
+
+As the uncertainties in the model were considered, the additive disturbance was constrained as:
+\begin{eqnarray}
+	\label{eq:const_w}
+	-1\% \le w \le 1\%.
+\end{eqnarray}
+
+Moreover, the change of the input variable was set to validate the control method implemented in the toolbox:
+\begin{eqnarray}
+	\label{eq:const_du}
+	-55\% \le \Delta u \le 55\%.
+\end{eqnarray}
+
+
+
 
 \subsection{Control setup}
 \label{sec:control_setup}
