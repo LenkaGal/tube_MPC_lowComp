@@ -51,7 +51,9 @@ A software package for MPC design and tuning: MPT+
 % MOVED
 The MPC design problem is addressed in plenty of well-developed software tools. Most of the packages provide dedicated built-in solvers, and the other delegate the optimization problem to third-party solvers. 
 
-Following is a brief review of the MPC design software limited just for the tools offering an interface for the \texttt{MATLAB}\footnote{\texttt{MATLAB}, MathWorks, Inc.: \texttt{\url{https://www.mathworks.com}}} programming environment. We refer the reader to~\cite{KF18,LT17, OSQP,QPALM,qpDUNES,Ferreau2014,HPIPM,CVXGEN,EJ21,HS22}, and the references therein, for the tailored solvers and tools supporting MPC design and its evaluation using also other programming environments, e.g., \texttt{Python}\footnote{\texttt{Python}, Python Software Foundation: \texttt{\url{https://www.python.org}}}, \texttt{Julia} \footnote{\texttt{Julia}, JuliaLang.org: \texttt{\url{https://julialang.org}}}, etc.
+Following is a brief review of the MPC design software limited just for the tools offering an interface for the \texttt{MATLAB}\footnote{\texttt{MATLAB}, MathWorks, Inc.: \texttt{\url{https://www.mathworks.com}}} programming environment. We refer the reader to~\cite{KF18,LT17,HS22}, 
+% ~\cite{KF18,LT17, OSQP,QPALM,qpDUNES,Ferreau2014,HPIPM,CVXGEN,EJ21,HS22}, 
+and the references therein, for the review on the tailored solvers and tools supporting MPC design and its evaluation using also other programming environments, e.g., \texttt{Python}\footnote{\texttt{Python}, Python Software Foundation: \texttt{\url{https://www.python.org}}}, \texttt{Julia} \footnote{\texttt{Julia}, JuliaLang.org: \texttt{\url{https://julialang.org}}}, etc. Such the packages include QP-solvers \texttt{qpDUNES}~\cite{qpDUNES}, \texttt{QPALM}~\cite{QPALM}, \texttt{CVXGEN}~\cite{CVXGEN}, and the tools introducing the distributed optimization \texttt{OSQP}~\cite{OSQP}, \texttt{ALADIN}-$\alpha$~\cite{EJ21}, to name a few. 
 % \texttt{Python}~\cite{PYTHON}, \texttt{Julia}~\cite{JULIA}, etc.
 
 Commercial \texttt{MPC Toolbox}~\cite{MPC_toolbox} for \texttt{MATLAB} addresses various classes of the MPC design problems, including the construction of the adaptive, explicit, gain-scheduled, and non-linear MPC controllers. This toolbox provides several built-in solvers and also a dedicated user interface \texttt{MPC Designer App} for the controller tuning. 
@@ -169,32 +171,33 @@ The control action $u(t)$, which is applied to the controlled plant in~\eqref{eq
 where $\star$ denotes the solution of the optimization problem in~\eqref{eq:tmpc} and $\mathbb{X}_{\mathrm{F}} \subseteq \mathbb{R}^{n_{\mathrm{x}}}$ is the corresponding domain, i.e., the feasibility set of the optimized initial conditions $\hat{x}_{0}$ of~\eqref{eq:tmpc}. 
 Tube MPC is implemented in receding horizon fashion, i.e., just the first control action $u(t) = \kappa(x(t))$ is applied to the plant and the optimization problem in~\eqref{eq:tmpc} is re-computed in each control step. 
 
-
-The output feedback Tube MPC design problem has the form:
-\begin{subequations}
-	\label{eq:tmpc_output}
-	\begin{eqnarray}
-		\label{eq:tmpc_output_cost}
-		\min_{\hat{u}_{0},\ldots,\hat{u}_{N-1}, \hat{x}_{0},\ldots,\hat{x}_{N} } \!\!\!\!\!\!\!\!\!\!\! &\,& \Vert \hat{x}_{N} \Vert_{P}^{2} + \sum_{k=0}^{N-1} \left( \Vert \hat{x}_{k} \Vert_{Q}^{2} + \Vert \hat{u}_{k} \Vert_{R}^{2} \right) \qquad \\
-		\label{eq:tmpc_output_rpi}
-		\mathrm{s.t.\!:} &\,& x(t) - \hat{x}_{0} \in \mathbb{T}_{\mathrm{x}} , \\
-		\label{eq:tmpc_output_model}
-		&\,&  \hat{x}_{k+1} = A \hat{x}_{k} + B \hat{u}_{k} , \\
-		\label{eq:tmpc_output_constraints_state}
-		&\,& \hat{x}_{k} \in \mathbb{X} \ominus \mathbb{T} , \\
-		\label{eq:tmpc_output_constraints_terminal}
-		&\,& \hat{x}_{N} \in \mathbb{X}_{\mathrm{N}}, \\
-		\label{eq:tmpc_output_constraints_input}
-		&\,& \hat{u}_{k} \in \mathbb{U} \ominus K \, \mathbb{T}_{\mathrm{x}} , \\
-		% \label{eq:tmpc_output_constraints_input_delta_k}
-		% &\,& \Delta \hat{u}_{l} \in \mathbb{U}_{\Delta} \ominus K \, \mathbb{T} , \\
-		\label{eq:tmpc_output_constraints_input_delta_0}
-		&\,& \hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U}_{\Delta} , \quad
-	\end{eqnarray}
-\end{subequations}
-where $\forall k = 0, \dots, N-1$,  $\forall l = 1, \dots, N-1$, $N$ is prediction horizon.
-
-$\mathbb{T} = \mathbb{T}_{\mathrm{y}} \oplus \mathbb{T}_{\mathrm{x}}$
+%% OUTPUT TUBE MPC
+%
+%The output feedback Tube MPC design problem has the form:
+%\begin{subequations}
+%	\label{eq:tmpc_output}
+%	\begin{eqnarray}
+%		\label{eq:tmpc_output_cost}
+%		\min_{\hat{u}_{0},\ldots,\hat{u}_{N-1}, \hat{x}_{0},\ldots,\hat{x}_{N} } \!\!\!\!\!\!\!\!\!\!\! &\,& \Vert \hat{x}_{N} \Vert_{P}^{2} + \sum_{k=0}^{N-1} \left( \Vert \hat{x}_{k} \Vert_{Q}^{2} + \Vert \hat{u}_{k} \Vert_{R}^{2} \right) \qquad \\
+%		\label{eq:tmpc_output_rpi}
+%		\mathrm{s.t.\!:} &\,& x(t) - \hat{x}_{0} \in \mathbb{T}_{\mathrm{x}} , \\
+%		\label{eq:tmpc_output_model}
+%		&\,&  \hat{x}_{k+1} = A \hat{x}_{k} + B \hat{u}_{k} , \\
+%		\label{eq:tmpc_output_constraints_state}
+%		&\,& \hat{x}_{k} \in \mathbb{X} \ominus \mathbb{T} , \\
+%		\label{eq:tmpc_output_constraints_terminal}
+%		&\,& \hat{x}_{N} \in \mathbb{X}_{\mathrm{N}}, \\
+%		\label{eq:tmpc_output_constraints_input}
+%		&\,& \hat{u}_{k} \in \mathbb{U} \ominus K \, \mathbb{T}_{\mathrm{x}} , \\
+%		% \label{eq:tmpc_output_constraints_input_delta_k}
+%		% &\,& \Delta \hat{u}_{l} \in \mathbb{U}_{\Delta} \ominus K \, \mathbb{T} , \\
+%		\label{eq:tmpc_output_constraints_input_delta_0}
+%		&\,& \hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U}_{\Delta} , \quad
+%	\end{eqnarray}
+%\end{subequations}
+%where $\forall k = 0, \dots, N-1$,  $\forall l = 1, \dots, N-1$, $N$ is prediction horizon.
+%
+%$\mathbb{T} = \mathbb{T}_{\mathrm{y}} \oplus \mathbb{T}_{\mathrm{x}}$
 
 \subsection{Explicit Tube MPC}
 \label{sec:explicit_mpc}
@@ -242,6 +245,17 @@ To be specific, the feedback law in~\eqref{eq:tmpc_control_law_pwa} saves $3\,n_
 
 [ TOOD: Describe an MPT+ package. ]
 
+The \texttt{MPTplus} toolbox extends the functionality of the \texttt{MPT} toolbox~\cite{MPT3}. In this section, we introduce the novel features, including (i) efficient explicit Tube MPC controller construction, (ii) introducing incremental constraints into the Tube MPC design, and (iii) the general polynomial approximation of the PWA control law. 
+
+\subsection{Installation}
+\label{sec:installation}
+
+The \texttt{MPTplus} toolbox is freely available at \texttt{GitHub}\footnote{\texttt{MPTplus: \url{https://github.com/holaza/mptplus}}}. We recommend to install the package via \texttt{tbxManager}\footnote{\texttt{tbxManager: \url{https://www.tbxmanager.com}}} by typping:
+\begin{lstlisting}[style=Matlab-editor]
+	tbxmanager install mptplus
+\end{lstlisting}
+Alternatively, install the \texttt{MPTplus} by setting the corresponding path in \texttt{MATLAB}. 
+
 \subsection{Advanced methods for explicit Tube MPC controllers}
 \label{sec:advanced_method}
 
@@ -254,8 +268,7 @@ Assume that from the previous Section~\ref{sec:construction} we have defined \ve
 %
 Using the \texttt{MPTplus}, we may simply construct both, non-explicit and explicit Tube MPC controllers\footnote{The current version of \texttt{MPTplus} always displays for explicit Tube MPC controller confusing information on the prediction horizon $N=1$, although the controller is constructed correctly for any value of $N$.}. To design explicit MPC policy that returns the control action as in~\eqref{eq:tmpc_control_law}, i.e., that is fed directly to the controlled system in~\eqref{eq:ulti_system}, we can evoke:
 \begin{lstlisting}[style=Matlab-editor]
-ops = {'eMPC',1}
-[~,ETMPC] = TMPCController(model,N,ops)
+ETMPC = TMPC.toExplicit
 \end{lstlisting}
 what constructs explicit controller \verb|ETMPC| that is defined over $n_\text{r} = 565$ critical regions in $n_\text{x} = 2$ dimensional space.
 
@@ -335,8 +348,9 @@ The model of the system was obtained through experimental identification. The ma
 	\begin{eqnarray}
 		A &=& \begin{bmatrix}
 			0.966
-		\end{bmatrix}, \\
-		B &=& \begin{bmatrix}
+		\end{bmatrix}, \quad % \\
+		% B &=& \begin{bmatrix}
+		B = \begin{bmatrix}
 			0.021
 		\end{bmatrix}. 
 	\end{eqnarray}
@@ -450,7 +464,8 @@ The paper presented a detailed tutorial for Tube MPC design using the novel pack
 
 [ TODO: Double-check Acks. ]
 
-The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants 1/0545/20, 1/0297/22, and the Slovak Research and Development Agency under the project APVV-20-0261. This research is funded by the European Union?s Horizon Europe under grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries).
+This research is funded by the European Commission under the grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries). The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants 1/0545/20, 1/0297/22, and the Slovak Research and Development Agency under the project APVV-20-0261. 
+
 
 
 \bibliographystyle{IEEEtran} % use IEEEtran.bst style
