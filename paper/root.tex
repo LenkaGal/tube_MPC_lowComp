@@ -326,8 +326,8 @@ Needlessly to say, there are many advanced methods that can be used on top of th
 
 \section{Case Study}
 \label{sec:case_study}
-To provide experimental results presenting the proposed tools, the case study was realized on a simple dynamical SISO system called Flexy2 (TODO: Fig). The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
-by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend in percentage is assumed as the controlled variable, and the fan speed in percentage is a manipulated variable. The goal was to control the flex sensor bend to a steady-state value and reject the disturbance.
+To provide experimental results presenting the proposed tools, the case study was realized on a simple dynamical SISO system called Flexy2~\cite{flexy2} (TODO: Fig). The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
+by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend $b$ in percentage is assumed as the controlled variable, and the fan speed $v$ in percentage is a manipulated variable. Flexy2 is a system with nonlinear dynamics, as the sensitivity of the flex bend descreases when increasing fan speed. Moreover, the oscillations are minor at higher fan speed. Lastly, the measurement noise is also present. These challenges make this device a suitable candidate for the implementation of tube MPC. As the system is naturally very fast and requires low sampling time with fast evaluation of the control inputs, the explicit solution of tube MPC is considered. In this work, the goal was to control the flex sensor bend to a steady-state value and reject the effect of the disturbance.
 
 The model of the system was obtained through experimental identification. The matrices of the nominal state-space system, discretized with sampling time $T_\mathrm{s} = 0.01$\,s are:
 \begin{subequations}
@@ -342,14 +342,14 @@ The model of the system was obtained through experimental identification. The ma
 	\end{eqnarray}
 \end{subequations}
 
-As the controlled as well as the manipulated variable were set in percentage, their values were constrained in the MPC optimization problem from $0\%$ to $100\%$. Considering the steady-state values where the model was linearized, i.e., $ u = 40\%$ and $ y = 68\%$, the constraints were set as follows: 
+As the controlled as well as the manipulated variable were set in percentage, their values were constrained in the MPC optimization problem from $0\%$ to $100\%$. Considering the steady-state values where the model was linearized, i.e., $ v^\mathrm{s} = 40\%$ and $ b^\mathrm{s} = 68\%$, the constraints were set as follows: 
 \begin{subequations}
 	\label{eq:const_u_y} 
 	\begin{eqnarray}
 	\label{eq:const_u}
 	-40\% \le u \le 60\%, \\
 	\label{eq:const_y}
-	-68\% \le y \le 32\%.
+	-68\% \le x \le 32\%.
 	\end{eqnarray}
 \end{subequations}
 
@@ -365,16 +365,42 @@ Moreover, the change of the input variable was set to validate the control metho
 	-55\% \le \Delta u \le 55\%.
 \end{eqnarray}
 
+By systematic tuning, the penalty matrices of the optimization problem in Eq.~\eqref{eq:tmpc} were set as:
+\begin{subequations}
+	\label{eq:setup_penalty} 
+	\begin{eqnarray}
+		\label{eq:setup_Q}
+		Q = 10, \\
+		\label{eq:setup_R}
+		R = 1.
+	\end{eqnarray}
+\end{subequations}
 
+The terminal penalty matrix $P$ was set as the LQR penalty, i.e.:
+\begin{eqnarray}
+	\label{eq:setup_P}
+	P = 95.385.
+\end{eqnarray}
 
+Furthermore, the terminal set was constructed as the LQR set and is defined by the following inequality:
+\begin{eqnarray}
+	\label{eq:setup_terminal_set}
+	\begin{bmatrix}
+	-1.8827 \\	
+	1.8827
+	\end{bmatrix} x \le 
+	\begin{bmatrix}
+		60\\	
+		40
+	\end{bmatrix}
+\end{eqnarray}
 
-\subsection{Control setup}
-\label{sec:control_setup}
+Last but not least, the prediction horizon $N$ was set to 30 steps. The tube MPC controller was
+constructed in MATLAB 2020b programming environment,
+using toolboxes YALMIP R20210331, MPT 3.2.1, MPTplus,
+and solver Gurobi 9.1.1. Tube MPC was executed on
+CPU AMD Ryzen 7 PRO 4750U, 1.7 GHz with 16 GB RAM. After designing the tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Fig.~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b$. In Fig.~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\%$, while rejecting the effect of the two disturbances occuring at times 10\,s and 20\,s. 
 
-[ TOOD: Write a detailed control setup. ]
-
-\subsection{Results and discussion}
-\label{sec:results}
 
 \begin{figure}
 	\begin{center}
@@ -384,13 +410,15 @@ Moreover, the change of the input variable was set to validate the control metho
 	\end{center}
 \end{figure}
 
-
-\begin{figure}[thpb]
-	\centering
-	\framebox{\includegraphics[scale=0.5]{images/deltaU_u.eps}}      
-	\caption{Tube MPC with $\Delta - u$ constraints. Trajectory of manipulated variable.}
-	\label{fig:deltaU_u}
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{images/deltaU_u.eps}
+		\caption{Tube MPC with $\Delta - u$ constraints. Trajectory of manipulated variable.}
+		\label{fig:deltaU_u}
+	\end{center}
 \end{figure}
+
+When observing Fig.~\ref{fig:deltaU_y} and Fig.~\ref{fig:deltaU_u}, it can be seen that the goal of the control was achieved. The effects of both disturbances were rejected, with respect to the constraints on the manipulated and controlled variable. Moreover, the constraints on the change of the manipulated variable were satisfied as well.
 
 \subsection{Figures and Tables}
 
