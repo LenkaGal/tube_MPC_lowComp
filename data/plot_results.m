@@ -17,19 +17,47 @@ set(gca, 'TickLabelInterpreter','latex','FontSize', fs)
 xlabel('time [s]')
 ylabel('fan speed [\%]')
 ylim([-10 110])
-legend('$u(t)$','$u_\mathrm{min}, u_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
+legend('$v(t)$','$v_\mathrm{min}, v_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
 
 figure, hold on
 plot(out.y(:,1),out.y(:,3),'Color', green,'LineWidth', lw)
 plot(out.y(:,1),out.y(:,2),'Color', blue,'LineWidth', lw)
-
 plot([0 25],[0 0],'--','Color', red, 'LineWidth', lw)
 plot([0 25],[100 100],'--','Color', red,'LineWidth', lw)
 set(gca, 'TickLabelInterpreter','latex','FontSize', fs)
 xlabel('time [s]')
 ylabel('flex sensor bend [\%]')
 ylim([-10 110])
-legend('$y^\mathrm{s}$', '$y(t)$', '$y_\mathrm{min}, y_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
+legend('$b^\mathrm{s}$', '$b(t)$', '$b_\mathrm{min}, b_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
+%% Cut data
+close all
+to1 = 251; from2 = 751;
+to2 = 1251; from3 = 1751;
+uplot = [out.u(1:to1,2);out.u(from2:to2,2);out.u(from3:end,2)]
+yplot = [out.y(1:to1,2);out.y(from2:to2,2);out.y(from3:end,2)]
+y_refplot = [out.y(1:to1,3);out.y(from2:to2,3);out.y(from3:end,3)]
+tplot = out.u(1:length(uplot),1)
+
+figure, hold on
+plot(tplot,uplot,'Color', blue,'LineWidth', lw)
+plot([0 15],[0 0],'r--','Color', red,'LineWidth', lw)
+plot([0 15],[100 100],'r--','Color', red,'LineWidth', lw)
+set(gca, 'TickLabelInterpreter','latex','FontSize', fs)
+xlabel('time [s]')
+ylabel('fan speed [\%]')
+axis([0 15 -10 110])
+legend('$v(t)$','$v_\mathrm{min}, v_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
+
+figure, hold on
+plot(tplot,y_refplot,'Color', green,'LineWidth', lw)
+plot(tplot,yplot,'Color', blue,'LineWidth', lw)
+plot([0 15],[0 0],'--','Color', red, 'LineWidth', lw)
+plot([0 15],[100 100],'--','Color', red,'LineWidth', lw)
+set(gca, 'TickLabelInterpreter','latex','FontSize', fs)
+xlabel('time [s]')
+ylabel('flex sensor bend [\%]')
+axis([0 15 -10 110])
+legend('$b^\mathrm{s}$', '$b(t)$', '$b_\mathrm{min}, b_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
 
 %tube3 - small offset
 %tube4 - nice but -68% not feasible

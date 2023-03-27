@@ -384,9 +384,9 @@ By systematic tuning, the penalty matrices of the optimization problem in Eq.~\e
 	\label{eq:setup_penalty} 
 	\begin{eqnarray}
 		\label{eq:setup_Q}
-		Q = 10, \\
+		Q &=& 10, \\
 		\label{eq:setup_R}
-		R = 1.
+		R &=& 1.
 	\end{eqnarray}
 \end{subequations}
 
@@ -413,12 +413,12 @@ Last but not least, the prediction horizon $N$ was set to 30 steps. The tube MPC
 constructed in MATLAB 2020b programming environment,
 using toolboxes YALMIP R20210331, MPT 3.2.1, MPTplus,
 and solver Gurobi 9.1.1. Tube MPC was executed on
-CPU AMD Ryzen 7 PRO 4750U, 1.7 GHz with 16 GB RAM. After designing the tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Fig.~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b$. In Fig.~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\%$, while rejecting the effect of the two disturbances occuring at times 10\,s and 20\,s. 
+CPU AMD Ryzen 7 PRO 4750U, 1.7 GHz with 16 GB RAM. After designing the tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Fig.~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b$. In Fig.~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\%$, while rejecting the effect of the two disturbances occuring at times 5\,s and 10\,s. 
 
 
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{images/deltaU_y.eps}
+		\includegraphics[width=0.5\textwidth]{images/deltaU_b_cut.eps}
 		\caption{Tube MPC with $\Delta - u$ constraints. Trajectory of controlled variable.}
 		\label{fig:deltaU_y}
 	\end{center}
@@ -426,7 +426,7 @@ CPU AMD Ryzen 7 PRO 4750U, 1.7 GHz with 16 GB RAM. After designing the tube expl
 
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{images/deltaU_u.eps}
+		\includegraphics[width=0.5\textwidth]{images/deltaU_v_cut.eps}
 		\caption{Tube MPC with $\Delta - u$ constraints. Trajectory of manipulated variable.}
 		\label{fig:deltaU_u}
 	\end{center}
