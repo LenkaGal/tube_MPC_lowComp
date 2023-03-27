@@ -339,8 +339,16 @@ Needlessly to say, there are many advanced methods that can be used on top of th
 
 \section{Case Study}
 \label{sec:case_study}
-To provide experimental results presenting the proposed tools, the case study was realized on a simple dynamical SISO system called Flexy2~\cite{flexy2} (TODO: Fig). The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
+To provide experimental results presenting the proposed tools, the case study was realized on a simple dynamical SISO system called Flexy2~\cite{flexy2}, see Fig.~\ref{fig:flexy2}. The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
 by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend $b$ in percentage is assumed as the controlled variable, and the fan speed $v$ in percentage is a manipulated variable. Flexy2 is a system with nonlinear dynamics, as the sensitivity of the flex bend descreases when increasing fan speed. Moreover, the oscillations are minor at higher fan speed. Lastly, the measurement noise is also present. These challenges make this device a suitable candidate for the implementation of tube MPC. As the system is naturally very fast and requires low sampling time with fast evaluation of the control inputs, the explicit solution of tube MPC is considered. In this work, the goal was to control the flex sensor bend to a steady-state value and reject the effect of the disturbance.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{images/flexy2}
+		\caption{Flexy2 device~\cite{flexy2}.}
+		\label{fig:flexy2}
+	\end{center}
+\end{figure}
 
 The model of the system was obtained through experimental identification. The matrices of the nominal state-space system, discretized with sampling time $T_\mathrm{s} = 0.01$\,s are:
 \begin{subequations}
