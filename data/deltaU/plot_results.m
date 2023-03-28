@@ -20,7 +20,7 @@ axis([0 15 -10 110])
 legend('$v(t)$','$v_\mathrm{min}, v_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
 
 figure, hold on
-plot(out.y(:,1),out.y(:,3),'Color', green,'LineWidth', lw)
+plot(out.y(:,1),out.y(:,3),'Color', green,'LineStyle', '--','LineWidth', lw)
 plot(out.y(:,1),out.y(:,2),'Color', blue,'LineWidth', lw)
 plot([0 15],[0 0],'--','Color', red, 'LineWidth', lw)
 plot([0 15],[100 100],'--','Color', red,'LineWidth', lw)
