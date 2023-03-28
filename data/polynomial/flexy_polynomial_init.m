@@ -75,20 +75,20 @@ options = struct('dV_eps', 1e-6);
 % MPT3 creates PWQ obj function oif terminal set is set
 % extract the XU stabilizing sety
 % plot the set
-close all
-XUset.XU.plot('color','y');
-hold on
-empc.partition.plot;
+% close all
+% XUset.XU.plot('color','y');
+% hold on
+% empc.partition.plot;
 
 % plot the optimal control input
-hold on
+figure, hold on
 % plotu(ctrl);
 empc.feedback.fplot();
 % axis([-4 4 -1.2 1.2])
-hold off
+% hold off
 
 % degree of the approximation polynomial
-aprx_degree = 5;
+aprx_degree = 3;
 % degree of the polya polynomial
 polya_degree = 1;
 
@@ -99,7 +99,11 @@ global a
   
 % plot the approximation
 xu_plot_mpt3(empc,a,XUset.XU)
-
+%%
+dist = zeros(1501,1); 
+dist(501:551) = 30;
+dist(1001:1051) = -30;
+dist = [[0:0.01:15]', dist]
 %% calculate the control input
 % x = 10;
 % order = length(a)-1;

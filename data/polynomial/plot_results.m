@@ -1,5 +1,5 @@
 % disturbance at time approx. 10s and 20s
-load opti3
+load poly3
 close all
 
 fs = 12;

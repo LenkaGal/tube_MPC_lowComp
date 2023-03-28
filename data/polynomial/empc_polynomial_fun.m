@@ -1,6 +1,9 @@
 function u = empc_polynomial_fun(x)
     global empc a
     order = length(a)-1;
+    
+    u_max = empc.model.u.max;
+    u_min = empc.model.u.min;
 
     u = sum(a{end});
     for i = 1:order
