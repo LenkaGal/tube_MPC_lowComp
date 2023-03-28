@@ -99,7 +99,7 @@ global a
   
 % plot the approximation
 xu_plot_mpt3(empc,a,XUset.XU)
-%%
+%% Disturbance on the input
 dist = zeros(1501,1); 
 dist(501:551) = 30;
 dist(1001:1051) = -30;

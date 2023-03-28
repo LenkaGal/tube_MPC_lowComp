@@ -1,5 +1,5 @@
 % disturbance at time approx. 10s and 20s
-load poly3
+load poly2
 close all
 
 fs = 12;
@@ -30,9 +30,15 @@ ylabel('flex sensor bend [\%]')
 axis([0 15 -10 110])
 legend('$b^\mathrm{s}$', '$b(t)$', '$b_\mathrm{min}, b_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
 
+%% Optimal 1-norm controller
 %opti1 - no disturbance (25sec. measurement)
 %opti2 - second dist. delayed (25sec. measurement)
 %opti3 - both dist. delayed 
 %opti4 - first dis. small
 %opti5 - ok, little bit oscillating
 %opti6 - most pretty, both dist. delayed 
+%opti7 - generated dist. on input
+%% Polynomial approximation
+%poly1 - no disturbance
+%poly2 - "our" disturbance on output
+%poly3 - generated dist. on input

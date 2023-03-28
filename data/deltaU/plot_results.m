@@ -1,5 +1,5 @@
 % disturbance at time approx. 10s and 20s
-load tube16
+load tube19
 close all
 
 fs = 12;
@@ -11,23 +11,23 @@ set(0,'defaulttextinterpreter','latex')
 
 figure, hold on
 plot(out.u(:,1),out.u(:,2),'Color', blue,'LineWidth', lw)
-plot([0 25],[0 0],'r--','Color', red,'LineWidth', lw)
-plot([0 25],[100 100],'r--','Color', red,'LineWidth', lw)
+plot([0 15],[0 0],'r--','Color', red,'LineWidth', lw)
+plot([0 15],[100 100],'r--','Color', red,'LineWidth', lw)
 set(gca, 'TickLabelInterpreter','latex','FontSize', fs)
 xlabel('time [s]')
 ylabel('fan speed [\%]')
-ylim([-10 110])
+axis([0 15 -10 110])
 legend('$v(t)$','$v_\mathrm{min}, v_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
 
 figure, hold on
 plot(out.y(:,1),out.y(:,3),'Color', green,'LineWidth', lw)
 plot(out.y(:,1),out.y(:,2),'Color', blue,'LineWidth', lw)
-plot([0 25],[0 0],'--','Color', red, 'LineWidth', lw)
-plot([0 25],[100 100],'--','Color', red,'LineWidth', lw)
+plot([0 15],[0 0],'--','Color', red, 'LineWidth', lw)
+plot([0 15],[100 100],'--','Color', red,'LineWidth', lw)
 set(gca, 'TickLabelInterpreter','latex','FontSize', fs)
 xlabel('time [s]')
 ylabel('flex sensor bend [\%]')
-ylim([-10 110])
+axis([0 15 -10 110])
 legend('$b^\mathrm{s}$', '$b(t)$', '$b_\mathrm{min}, b_\mathrm{max}$', 'Interpreter','latex', 'FontSize', fs)
 %% Cut data
 close all
@@ -74,3 +74,6 @@ legend('$b^\mathrm{s}$', '$b(t)$', '$b_\mathrm{min}, b_\mathrm{max}$', 'Interpre
 %tube14 - quite nice, deltaU = [-60;60] 
 %tube15 - quite nice, small offset, deltaU = [-60;60] 
 %tube16 - quite nice, deltaU = [-55;55] 
+%tube17 - generated disturbance on inputs
+%tube18 - generated disturbance on inputs
+%tube19 - generated disturbance on inputs, the prettiest

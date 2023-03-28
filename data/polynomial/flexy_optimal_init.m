@@ -69,3 +69,9 @@ empc = mpc.toExplicit()
 
 figure, empc.feedback.fplot
 
+%% Disturbance on the input
+dist = zeros(1501,1); 
+dist(501:551) = 30;
+dist(1001:1051) = -30;
+dist = [[0:0.01:15]', dist]
+

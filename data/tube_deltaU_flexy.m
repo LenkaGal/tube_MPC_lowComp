@@ -236,13 +236,8 @@ for k = 1 : Nsim
     Udata = [Udata, Utube];
 
 end
-%% Disturbance on the input
-dist = zeros(1501,1); 
-dist(501:551) = 30;
-dist(1001:end) = -30;
-dist = [[0:0.01:15]', dist];
 
-%% Figures
+% Figures
 figure(2), 
 subplot(2,1,1), box on, hold on, xlabel('k'), ylabel('x')
 stairs([0 , size(Xdata,2)-1], [0,0], 'k:')
