@@ -3,7 +3,8 @@ clear all
 close all
 
 %% Model data
-Z = 0.6342;
+% Z = 0.6342;
+Z = 3; % vieme ist so zosilnenim aj vyssie, napr. Z=10 kvoli sklonu PWA zak.riad. ale potom to crashne neskor pri tych XU 
 T = 0.2926;
 
 Ts = 0.01;
@@ -39,8 +40,7 @@ nu = size(B,2); % Number of inputs
 %% MPC data
 Q = diag(10); % State penalty
 R = 1*eye(nu); % Input penalty
-N = 30; % Prediction horizon
-
+N = 10; % Prediction horizon
 
 %% MPC stability
 % LTI system
@@ -101,12 +101,12 @@ global a
 xu_plot_mpt3(empc,a,XUset.XU)
 
 %% calculate the control input
-x = 10;
-order = length(a)-1;
-
-u = sum(a{end});
-for i = 1:order
-    u = u + a{i}*x.^(order+1-i);
-end
-
-u = 0.5*(0.5*(u + u_max - abs(u - u_max)) + u_min + abs(0.5*(u + u_max - abs(u - u_max)) - u_min));
+% x = 10;
+% order = length(a)-1;
+% 
+% u = sum(a{end});
+% for i = 1:order
+%     u = u + a{i}*x.^(order+1-i);
+% end
+% 
+% u = 0.5*(0.5*(u + u_max - abs(u - u_max)) + u_min + abs(0.5*(u + u_max - abs(u - u_max)) - u_min));

@@ -4,6 +4,7 @@ close all
 
 %% Model data
 Z = 0.6342;
+Z = 3;
 T = 0.2926;
 
 Ts = 0.01;
@@ -39,7 +40,7 @@ nu = size(B,2); % Number of inputs
 %% MPC data
 Q = diag(10); % State penalty
 R = 1*eye(nu); % Input penalty
-N = 30; % Prediction horizon
+N = 10; % Prediction horizon
 
 
 %% MPC stability
@@ -54,8 +55,8 @@ model.x.max = x_max;
 % Penalty functions
 model.x.penalty = OneNormFunction(Q);
 model.u.penalty = OneNormFunction(R);
-% % Terminal set
-% Tset = model.LQRSet;
+% Terminal set
+% Tset = Polyhedron('lb',-5,'ub',5)
 % model.x.with('terminalSet');
 % model.x.terminalSet = Tset;
 % % Terminal penalty
@@ -65,4 +66,6 @@ model.u.penalty = OneNormFunction(R);
 global empc
 mpc = MPCController(model, N)
 empc = mpc.toExplicit()
+
+figure, empc.feedback.fplot
 
