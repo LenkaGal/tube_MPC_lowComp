@@ -337,9 +337,9 @@ Needlessly to say, there are many advanced methods that can be used on top of th
 
 [ TOOD: Recall an LowCom package. ]
 
-\section{Case Study}
+\section{Case Studies}
 \label{sec:case_study}
-To provide experimental results presenting the proposed tools, the case study was realized on a simple dynamical SISO system called Flexy2~\cite{flexy2}, see Fig.~\ref{fig:flexy2}. The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
+This section adresses the experimental implementation of the two presented control methods, i.e., the tube explicit MPC with $\Delta-u$ constratints, and polynomial approximation of explicit MPC. To provide experimental results presenting the proposed tools, the case study was realized on a simple dynamical SISO system called Flexy2~\cite{flexy2}, see Fig.~\ref{fig:flexy2}. The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
 by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend $b$ in percentage is assumed as the controlled variable, and the fan speed $v$ in percentage is a manipulated variable. Flexy2 is a system with nonlinear dynamics, as the sensitivity of the flex bend descreases when increasing fan speed. Moreover, the oscillations are minor at higher fan speed. Lastly, the measurement noise is also present. These challenges make this device a suitable candidate for the implementation of tube MPC. As the system is naturally very fast and requires low sampling time with fast evaluation of the control inputs, the explicit solution of tube MPC is considered. In this work, the goal was to control the flex sensor bend to a steady-state value and reject the effect of the disturbance.
 
 \begin{figure}
@@ -350,7 +350,7 @@ by a flexible sensor placed in the air column. The sensor changes its electrical
 	\end{center}
 \end{figure}
 
-The model of the system was obtained through experimental identification. The matrices of the nominal state-space system, discretized with sampling time $T_\mathrm{s} = 0.01$\,s are:
+The model of the system was obtained through experimental identification based on several step responses. The matrices of the nominal state-space system, discretized with sampling time $T_\mathrm{s} = 0.01$\,s are:
 \begin{subequations}
 	\label{eq:model_A_B} 
 	\begin{eqnarray}
@@ -359,12 +359,12 @@ The model of the system was obtained through experimental identification. The ma
 		\end{bmatrix}, \quad % \\
 		% B &=& \begin{bmatrix}
 		B = \begin{bmatrix}
-			0.021
+			0.101
 		\end{bmatrix}. 
 	\end{eqnarray}
 \end{subequations}
 
-As the controlled as well as the manipulated variable were set in percentage, their values were constrained in the MPC optimization problem from $0\%$ to $100\%$. Considering the steady-state values where the model was linearized, i.e., $ v^\mathrm{s} = 40\%$ and $ b^\mathrm{s} = 68\%$, the constraints were set as follows: 
+As the controlled as well as the manipulated variable were set in percentage, their values were constrained from $b_{\min} = v_{\min} = 0\%$ to $b_{\max} = v_{\max} = 100\%$. Considering the steady-state values where the model was linearized, i.e., $ v^\mathrm{s} = 40\%$ and $ b^\mathrm{s} = 68\%$, the constraints were set in both presented control methods as follows: 
 \begin{subequations}
 	\label{eq:const_u_y} 
 	\begin{eqnarray}
@@ -375,7 +375,14 @@ As the controlled as well as the manipulated variable were set in percentage, th
 	\end{eqnarray}
 \end{subequations}
 
-As the uncertainties in the model were considered, the additive disturbance was constrained as:
+The rest of the two explicit MPC setups is described in the next sections, according to the specific control approach, as the controllers differ in their structutres and tuning parameters. Both controllers were constructed in MATLAB 2020b programming environment, using toolboxes YALMIP R20210331, MPT 3.2.1, MPTplus,
+and solver Gurobi 9.1.1. The explicit MPCs were executed on
+CPU AMD Ryzen 7 PRO 4750U, 1.7 GHz with 16 GB RAM.
+
+\subsection{Tube explicit MPC with $\Delta-u$ constraints}
+\label{sec:tube_exp}
+In this section, the implementation of tube explicit MPC with $\Delta-u$ constraints is described. Let us consider the system model in Eq.~\eqref{eq:model_A_B} and constraints stated in Eq.~\eqref{eq:const_du}. 
+As the uncertainties in the model were considered, the additive disturbance was considered in the MPC desing as well and was constrained as:
 \begin{eqnarray}
 	\label{eq:const_w}
 	-1\% \le w \le 1\%.
@@ -417,16 +424,11 @@ Furthermore, the terminal set was constructed as the LQR set and is defined by t
 	\end{bmatrix}
 \end{eqnarray}
 
-Last but not least, the prediction horizon $N$ was set to 30 steps. The tube MPC controller was
-constructed in MATLAB 2020b programming environment,
-using toolboxes YALMIP R20210331, MPT 3.2.1, MPTplus,
-and solver Gurobi 9.1.1. Tube MPC was executed on
-CPU AMD Ryzen 7 PRO 4750U, 1.7 GHz with 16 GB RAM. After designing the tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Fig.~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b$. In Fig.~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\%$, while rejecting the effect of the two disturbances occuring at times 5\,s and 10\,s. 
-
+Last but not least, the prediction horizon $N$ was set to 30 steps. After the construction of the tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Fig.~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b$. In Fig.~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\%$, while rejecting the effect of the two disturbances occuring at times 5\,s and 10\,s. 
 
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{images/deltaU_b_cut.eps}
+		\includegraphics[width=0.5\textwidth]{images/deltaU_b_new.eps}
 		\caption{Tube MPC with $\Delta - u$ constraints. Trajectory of controlled variable.}
 		\label{fig:deltaU_y}
 	\end{center}
@@ -434,7 +436,7 @@ CPU AMD Ryzen 7 PRO 4750U, 1.7 GHz with 16 GB RAM. After designing the tube expl
 
 \begin{figure}
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{images/deltaU_v_cut.eps}
+		\includegraphics[width=0.5\textwidth]{images/deltaU_v_new.eps}
 		\caption{Tube MPC with $\Delta - u$ constraints. Trajectory of manipulated variable.}
 		\label{fig:deltaU_u}
 	\end{center}
@@ -442,21 +444,64 @@ CPU AMD Ryzen 7 PRO 4750U, 1.7 GHz with 16 GB RAM. After designing the tube expl
 
 When observing Fig.~\ref{fig:deltaU_y} and Fig.~\ref{fig:deltaU_u}, it can be seen that the goal of the control was achieved. The effects of both disturbances were rejected, with respect to the constraints on the manipulated and controlled variable. Moreover, the constraints on the change of the manipulated variable were satisfied as well.
 
-\subsection{Figures and Tables}
+\subsection{Polynomial approximation of explicit MPC}
+\label{sec:polynomial_exp}
+This case study focuses on the second contribution of this work, i.e., the implementation of the explicit MPC approximated with a polynomial. In this approach, the MPC setup in Eq.~(TODO:ref) was considered. Let us consider the system model in Eq.~\eqref{eq:model_A_B} and constraints stated in Eq.~\eqref{eq:const_du}. By systematic tuning, the penalty matrices of the optimization problem in Eq.~(TODO:ref) were set as:
+\begin{subequations}
+	\label{eq:setup_penalty_pol} 
+	\begin{eqnarray}
+		\label{eq:setup_Q_pol}
+		Q &=& 10, \\
+		\label{eq:setup_R_pol}
+		R &=& 1.
+	\end{eqnarray}
+\end{subequations}
 
-\begin{table}[h]
-\caption{An Example of a Table}
-\label{table_example}
-\begin{center}
-\begin{tabular}{|c||c|}
-\hline
-One & Two\\
-\hline
-Three & Four\\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
+The prediction horizon was set as 10 steps long. Based on the aforementioned parameters, the explicit MPC was constructed. Next, the polynomial controller was created based on the optimal one. The degree of the polynomial was determined to 3\textsuperscript{rd} degree. The approximation of the optimal control law can be seen in Fig.~\ref{fig:approx}
+ 
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{images/approximation.eps}
+		\caption{Approximation of the optimal eMPC. The blue line represents the optimal control law, the yellow area is stability tube, and the red line represents the polynomial approximation of the optimal control law.}
+		\label{fig:approx}
+	\end{center}
+\end{figure}
+
+The comparison of the control results can be seen in Fig.~\ref{fig:poly_y} for the controlled variable and in Fig.~\ref{fig:poly_u} for the manipulated variable. In both graphs, two trajectories are depicted - for the original optimal controller with subscript ,,o'' and its polynomial approximation with subscpript ,,p''. Analogously to the first case study, the aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\%$, while rejecting the effect of the two disturbances occuring at times 5\,s and 10\,s.
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{images/poly_b.eps}
+		\caption{Comparison of optimal eMPC and its polynomial approximation. Trajectory of controlled variable.}
+		\label{fig:poly_y}
+	\end{center}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{images/poly_v.eps}
+		\caption{Comparison of optimal eMPC and its polynomial approximation. Trajectory of manipulated variable.}
+		\label{fig:poly_u}
+	\end{center}
+\end{figure}
+
+It can be seen in Fig.~\ref{fig:poly_y}, that both disturbances were successfully rejected. Compared to the optimal controller, the approximated one was less oscillating in terms of manipulated variable, see Fig.~\ref{fig:poly_u}. With more cautious control inputs, the effect of the disturbance on the trajectory of controlled variable is more significant. The reason of less oscillating control inputs can be seen in Fig.~\ref{fig:approx}. The original control law is more steep around the origin, while the polynomial approximation is quite moderate. The approximation can be further tuned by setting the polynomial order, which at the end of the day affects the control performance.
+
+%---------------EXAMPLE OF TABLE-----------------
+%\begin{table}[h]
+%\caption{An Example of a Table}
+%\label{table_example}
+%\begin{center}
+%\begin{tabular}{|c||c|}
+%\hline
+%One & Two\\
+%\hline
+%Three & Four\\
+%\hline
+%\end{tabular}
+%\end{center}
+%\end{table}
 	
  
 \section{Conclusions}

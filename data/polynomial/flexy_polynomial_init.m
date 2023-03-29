@@ -99,6 +99,13 @@ global a
   
 % plot the approximation
 xu_plot_mpt3(empc,a,XUset.XU)
+set(0,'defaulttextinterpreter','latex')
+% figure(2)
+set(gca, 'TickLabelInterpreter','latex','FontSize', 12)
+xlabel('x\,[\%]')
+ylabel('u\,[\%]')
+
+
 %% Disturbance on the input
 dist = zeros(1501,1); 
 dist(501:551) = 30;

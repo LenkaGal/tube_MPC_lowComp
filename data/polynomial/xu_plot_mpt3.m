@@ -23,19 +23,21 @@ end
 
 
 figure
+set(0,'defaulttextinterpreter','latex')
+set(gca, 'TickLabelInterpreter','latex','FontSize', 12)
 hold on
 % XUset.plot('color','y','linestyle','--','linewidth', 2)
-XUset.plot('color','y','linewidth', 2)
-plot(x, z, 'b--', 'LineWidth', 3);
+XUset.plot('color',[255 255 153]/255,'linewidth', 1)
+plot(x, z, 'b--', 'LineWidth', 2);
 if plotSaturated
-    plot(x, y, 'g', 'LineWidth', 3);
-    plot(x, y_sat, 'r--', 'LineWidth', 3);
+    plot(x, y, 'g', 'LineWidth', 2);
+    plot(x, y_sat, 'r--', 'LineWidth', 2);
 else
-    plot(x, y, 'r--', 'LineWidth', 3);
+    plot(x, y, 'r--', 'LineWidth', 2);
 end
 axis([min(x)*1.1 max(x)*1.1 min(y_sat)*1.1 max(y_sat)*1.1])
 if plotSaturated, s = '(saturated)'; else, s = ''; end
-title(sprintf('Approximation order: %d %s', order, s));       
+% title(sprintf('Approximation order: %d %s', order, s));       
 hold off
 
 end
