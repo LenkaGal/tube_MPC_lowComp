@@ -571,17 +571,17 @@ Moreover, the change of the input variable was set to validate the control metho
 	\label{eq:const_du}
 	-55\,\% \le \Delta u \le 55\,\%.
 \end{eqnarray}
-By systematic tuning, the penalty matrices of the optimization problem in~\eqref{eq:tmpc} were set as:
+By systematic tuning, the penalty matrices $Q$, $R$ of the optimization problem in~\eqref{eq:tmpc}, and the terminal penalty matrix $P$ given by the LQR penalty, were respectively evaluated as:
 \begin{eqnarray}
 \label{eq:setup_penalty}
-Q = 10, \quad R = 1.
+Q = 10, \quad R = 1, \quad P = 95.3852 \, .
 \end{eqnarray}
 
-The terminal penalty matrix $P$ was set as the LQR penalty, i.e.:
-\begin{eqnarray}
-	\label{eq:setup_P}
-	P = 95.3852.
-\end{eqnarray}
+%The terminal penalty matrix $P$ was set as the LQR penalty, i.e.:
+%\begin{eqnarray}
+%	\label{eq:setup_P}
+%	P = 95.3852.
+%\end{eqnarray}
 Furthermore, the terminal set was constructed as the LQR set and is defined by the following inequality:
 \begin{eqnarray}
 	\label{eq:setup_terminal_set}
@@ -601,7 +601,7 @@ When observing Figures~\ref{fig:deltaU_y}, \ref{fig:deltaU_u}, it can be seen th
 \subsection{Polynomial approximation of explicit MPC}
 \label{sec:polynomial_exp}
 
-\begin{figure}[hbp!]
+\begin{figure}[bp!]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{images/approximation.eps}
 		\caption{Approximation of the optimal ETMPC. The blue line represents the optimal control law, the yellow area is stability tube, and the red line represents the polynomial approximation of the optimal control law.}
