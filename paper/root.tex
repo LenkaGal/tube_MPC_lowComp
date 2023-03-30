@@ -38,8 +38,8 @@ A software package for MPC design and tuning: MPT+
 \begin{abstract}
 
 [ TOOD: Think of the better title. ]
-
-[ TOOD: Write an Abstract ]
+The industrial implementation of the model predictive control (MPC) is driven by the necessity to design, tune, and validate the constructed control policy. 
+We present a novel software toolbox for advanced model predictive control (MPC) design extending the \texttt{Multi-Parametric toolbox} (\texttt{MPT}).  Particularly, \texttt{MPTplus} introduces several advanced MPC controller design methods, including memory-efficient explicit Tube MPC design, Tube MPC controller with the limited rate of control actions, and a polynomial approximation of the $1-$, $\infty-$norm-based explicit control law. The benefits of the proposed toolbox are demonstrated using the both, numerical simulations and the laboratory implementation on the device with a fast dynamics.  
 
 \end{abstract}
 
@@ -84,7 +84,7 @@ In this framework, the polynomial-based approximation of the explicit solution m
 In both, implicit and explicit MPC design problems, the tube MPC represents a natural step towards the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, Tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
 
 % [ TODO: Main contributions]
-This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} augmenting the features of the original \texttt{MPT} toolbox by the notable methods introducing: (i) the framework for the explicit Tube MPC design, (ii) limits on a rate of control actions for implicit/explicit Tube MPC design, and (iii) the polynomial approximation of any explicit MPC controller according to~\cite{KL11}. To demonstrate the benefits of the proposed \texttt{MPTplus} for real-world applications, we analyze the results of an extensive case study considering the implementation of the designed MPC controllers on the laboratory device having a fast-dynamics called Flexy~\cite{CK19}. 
+This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} augmenting the features of the original \texttt{MPT} toolbox by the notable methods introducing: (i) the framework for the memory-efficient explicit Tube MPC design, (ii) limits on a rate of control actions for implicit/explicit Tube MPC design, and (iii) the polynomial approximation of any explicit MPC controller according to~\cite{KL11}. To demonstrate the benefits of the proposed \texttt{MPTplus} for real-world applications, we analyze the results of an extensive case study considering the implementation of the designed MPC controllers on the laboratory device having a fast-dynamics called Flexy~\cite{CK19}. 
 
 \section{Theoretical backgrounds}
 \label{sec:tube_mpc_theory}
@@ -453,9 +453,16 @@ EMPCsim = EMPC.simplify('separation')
 \end{lstlisting}
 where \verb|ETMPCsim| denotes the resulting simplified controller. With the considered control setup, the separation-based controller has removed all $120$ regions with saturated feedback law which represents the reduction of $21\%$ w.r.t. its complex counterpart \verb|ETMPC|.
 
-Needlessly to say, there are many advanced methods that can be used on top of the \verb|ETMPC| object that, due to paper limitations, can not be listed here. All interested readers are hence referred to the dedicated \texttt{MPT} website: \\ \texttt{\url{https://www.mpt3.org}}.
+The complexity reduction using the polynomial approximation significantly reduces the memory footprint by replacing the whole explicit solution map by a coefficients of the polynomials. The real-time runtimes are also decreased as the point location problem is replaced by the polynomial evaluation, see Section~\ref{sec:polynomial}. This approach is called and evaluated by:
+\begin{lstlisting}[style=Matlab-editor]
+EMPCsim = PolynomialMPC(EMPC)
+u = EMPCsim.evaluate(x0)
+\end{lstlisting}
+The experimental results are analyzed in detail in Section~\ref{sec:polynomial_exp}.
 
-[ TODO: How about: \texttt{clipping}, \texttt{Lyapunov}: \texttt{lyap = loop.toSystem.lyapunov(type)} ? ]
+Needlessly to say, there are many advanced methods that can be used on top of the ``\verb|ETMPC|'' object that, due to paper limitations, can not be listed here. All interested readers are hence referred to the dedicated \texttt{MPT} website: \\ \texttt{\url{https://www.mpt3.org}}.
+
+% [ TODO: How about: \texttt{clipping}, \texttt{Lyapunov}: \texttt{lyap = loop.toSystem.lyapunov(type)} ? ]
 
 \subsection{Tube MPC design for rate constraints}
 \label{sec:mptplus_tube_mpc_delta_u}
@@ -481,7 +488,7 @@ u_prev = 0;
 [u, feasible] = TMPC.evaluate(x0,...
                 'u.previous', u_prev)
 \end{lstlisting}
-returning the closed-loop control action value $u_0 = [0.3678]$.
+leading to the closed-loop control action $u_0 = [0.3678]$.
 
 %\subsection{LowCom}
 %\label{sec:code_mpt3lowcom}
@@ -628,19 +635,17 @@ It can be seen in Figure~\ref{fig:poly_y}, that both disturbances were successfu
 \section{Conclusions}
 \label{sec:conclusions}
 
-[ TOOD: Summarize the main conclusions. ]
-
-The paper presented a detailed tutorial for Tube MPC design using the novel package extension for \texttt{MPT} toolbox. 
+% [ TOOD: Summarize the main conclusions. ]
+The paper presented a detailed tutorial for package \texttt{MPTplus} extending the original \texttt{MPT} toolbox. Among other relevant features, the release introduces the full framework for the memory-efficient explicit Tube MPC design taking into account also the limited rate of control action. \texttt{MPT} toolbox also enables the construction of light-weight polynomial-approximation-based controllers. The possibilities of construction, tuning, and validation of the various MPC controllers were analyzed by the laboratory implementation on the device with fast dynamics. The measured control profiles confirmed the ease of MPC tuning and the benefits of the user-friendly environment of \texttt{MPTplus} pushing the designed MPC controllers towards their industrial implementation.
 
 \addtolength{\textheight}{-12cm}
 
 \section*{Acknowledgemnts}
 
-[ TODO: Double-check Acks. ]
-
-This research is funded by the European Commission under the grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries). The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants 1/0545/20, 1/0297/22, and the Slovak Research and Development Agency under the project APVV-20-0261. \textcolor{red}{Neviem, ci to je ok, ale moze byt aj mlady vyskumnik? $\rightarrow$ L. Galčíková was also supported by an internal STU grant. } 
-
-
+% [ TODO: Double-check Acks. ]
+\small{
+This research is funded by the European Commission under the grant no. 101079342 (Fostering Opportunities Towards Slovak Excellence in Advanced Control for Smart Industries). The authors gratefully acknowledge the contribution of the Scientific Grant Agency of the Slovak Republic under the grants 1/0545/20, 1/0297/22, and the Slovak Research and Development Agency under the project APVV-20-0261. L. Galčíková was also supported by an internal STU grant. 
+}
 
 \bibliographystyle{IEEEtran} % use IEEEtran.bst style
 % \small
