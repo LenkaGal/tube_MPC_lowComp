@@ -260,39 +260,34 @@ Let us consider the MPC optimization problem in the following form:
 		&\,& u_{k} \in \mathbb{U},
 	\end{eqnarray}
 \end{subequations}
-
-where the properties of the parameters are adopted from optimization problem in~\eqref{eq:tmpc}. The norm is considered as $p \in \{1,\inf\}$, i.e. the cost function is linear. When the optimization problem is parametrically solved for all feasible $x_0 \in \mathbb{X}$, the PWA explicit feedback control law is obtained:
+where the properties of the parameters are adopted from optimization problem in~\eqref{eq:tmpc}. The norm is considered as $p \in \{1,\infty \}$, i.e., the cost function in~\eqref{eq:empc_cost} is linear. Then, by multi-parametric solving for all feasible $x_0 \in \mathbb{X}_{\mathrm{F}}$, the PWA explicit feedback control law is obtained in the form:
 \begin{eqnarray}
 	\label{eq:empc_control_law}
 	u^{\star}(x(t)) \!\!\!\!&=&\!\!\!\! F_{i} \, x(t) + g_{i} \quad \text{if} \quad x(t) \in \mathcal{P}_{i}.
 \end{eqnarray}
-
-The aim of this control approach is to approximate the PWA control law in~\eqref{eq:empc_control_law} with a polynomial:
+The aim of the complexity reduction approach is to approximate the PWA control law in~\eqref{eq:empc_control_law} with a polynomial:
 \begin{eqnarray}
 	\label{eq:poly_control_law}
 	\widetilde{u}^{\star}(x(t)) \!\!\!\!&=&\!\!\!\! a_{1} \, x(t) + a_{2} x(t)^2 + \dots + a_{d} x(t)^d,
 \end{eqnarray}
+where $a =\{a_{1}, \dots, a_{d}\}$ are the coefficients of the polynomial and $d$ is the polynomial degree which is fixed and given in advance by the control engineer. Note, the polynomial degree $d$ directly determines the memory footprint of the approximated control law in~\eqref{eq:poly_control_law}. Simultaneously, value of $d$ affects the performance loss. Therefore, $d$ trades-off the performance and the complexity reduction represents, hence, representing the main tuning parameter of the method.
 
-where $a =\{a_{1}, \dots, a_{d}\}$ are the coefficients of the polynomial and $d$ is the polynomial degree which is fixed and defined by control engineer.
-
-Let us presume that there exists a PWA Lyapunov function $L$ for the considered closed-loop system $f_{\mathrm{CL}}$ such that $L(f_{\mathrm{CL}}) \le \gamma L(x)$, $L(0) = 0$ for $\gamma \in [0,1)$ and $x$ is from the feasible set $\Phi$, i.e., $x \in \Phi$. Considering the controlled system, Lyapunov function $L$ and fixed $\gamma$, the stabilizing tube can be constructed~\cite{tube_FCh}:
+Let us presume that there exists a PWA Lyapunov function $L$ for the considered closed-loop system $f_{\mathrm{CL}}$ such that $L(f_{\mathrm{CL}}) \le \gamma L(x)$, $L(0) = 0$ for $\gamma \in [0,1)$ and $x$ is within the feasible set $\mathbb{X}_{\mathrm{F}}$, i.e., $x \in \mathbb{X}_{\mathrm{F}}$. Considering the controlled LTI system, Lyapunov function $L$ and fixed $\gamma$, the stabilizing ``tube'' can be constructed according to~\cite{tube_FCh}:
 \begin{eqnarray}
 	\label{eq:stab_tube}
 	\mathcal{T}(L, \gamma) := \begin{Bmatrix}
-		[x^\top, u^\top]^\top \,|\, u \in \mathbb{U}, x \in \Phi, Ax+Bu \in \Phi \\
-		L(f_{\mathrm{CL}}) \le \gamma L(x)		
-	\end{Bmatrix}, 
+		[x^\top, u^\top]^\top \, : \, u \in \mathbb{U}, x \in \mathbb{X}_{\mathrm{F}} , A x + B u \in \\mathbb{X}_{\mathrm{F}} \\
+		L(f_{\mathrm{CL}}) \le \gamma L(x)
+	\end{Bmatrix} , 
 \end{eqnarray}
-
-which consist of $i = 1, \dots, n_\mathrm{r}$ polytopes:
+consisting of $i = 1, \dots, n_\mathrm{r}$ polytopes:
 \begin{eqnarray}
 	\label{eq:stab_tube_polytope}
 	\mathcal{T}_i := \begin{Bmatrix}
-		[x^\top, u^\top]^\top \,|\, [T_i^x, T_i^u] [x^\top, u^\top]^\top \le T_i^0		
+		[x^\top, u^\top]^\top \, : \, [T_i^{\mathrm{x}}, T_i^{\mathrm{u}}] [x^\top, u^\top]^\top \le T_i^0		
 	\end{Bmatrix}. 
 \end{eqnarray}
-
-If a stabilizing Lyapunov function can be found and a stability tube can be constructed, then by solving a simple linear program, the polynomial coefficients $a$ are found. For more detailed overview of the approximation procedure see~\cite{kvasnica_polynomial}.
+If such a stabilizing Lyapunov function exists and a stability ``tube'' is constructed, then the polynomial coefficients $a$ are evaluated by solving a simple linear program. For more detailed overview of the approximation procedure see~\cite{kvasnica_polynomial}.
 
 %If a stabilizing Lyapunov function can be found and a stability tube can be constructed, then the following linear programming problem can be solved
 %\begin{subequations}
