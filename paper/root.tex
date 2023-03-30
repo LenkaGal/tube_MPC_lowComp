@@ -46,8 +46,12 @@ A software package for MPC design and tuning: MPT+
 \section{Introduction}
 \label{sec:introduction}
 
-[ TOOD: Write an Introduction ]
-
+% [ TOOD: Write an Introduction ]
+% [ TOOD: Introduce MPC ]
+Although the model predictive control (MPC)~\cite{M00, B17} provides an optimal control policy under various physical and performance constraints, its industrial implementation is still under its significant relevance~\cite{QB03}. 
+Introducing multi-parametric programming into MPC design framework~\cite{BM02} gained its potential by reducing the runtimes and requirements on the advanced software, pushed the MPC implementation towards the industrial embedded hardware, see~\cite{PK21}. Moreover, the construction of the explicit solution map in the form of the piece-wise affine (PWA) function enables rigorous certification of the control law. 
+%
+Although the MPC has been intensively studied in past three decades, there are still challenges worth addressing to spread its industrial implementation. Such a development is highly dependent on the tailored validation tools. 
 % MOVED
 The MPC design problem is addressed in plenty of well-developed software tools. Most of the packages provide dedicated built-in solvers, and the other delegate the optimization problem to third-party solvers. 
 
@@ -68,18 +72,19 @@ The non-linear MPC can be designed also using the open-source toolbox \texttt{MA
 %
 Similar to \texttt{YALMIP} toolbox, the \texttt{CVX}~\cite{GB08} is focused on the modelling of the various classes of convex optimization problems suitable for MPC controller design. 
 
-[ TODO: Introduce MPT ]
+% [ TODO: Introduce MPT ]
+The \texttt{Multi-Parametric Toolbox} (\texttt{MPT})~\cite{MPT3} for \texttt{MATLAB} represents a widely-used software package for the implicit (non-explicit) and explicit MPC design, multi-parametric optimization, and operations over the convex sets. \texttt{MPT} integrates many tools enabling efficient construction, tuning, and validation of the advanced MPC controllers. 
 
-\texttt{MPT} module \texttt{LowCom}~\cite{KH15} introduces the set of methods reducing the complexity of the explicit solution maps associated with the MPC controllers.
+The industrial implementation of the MPC is limited by the runtime effort and advanced hardware/software requirements, especially in case of the implicit MPC, and memory consumption, limiting implementation of explicit MPC on the industrial embedded hardware. Therefore, the complexity reduction methods are of a high interest. 
+% [ TODO: Introduce LowCom ]
+\texttt{MPT} module \texttt{LowCom}~\cite{KH15} introduces the set of methods reducing the complexity of the explicit solution maps associated with the MPC controllers to minimize the runtimes and memory footprints. 
+In this framework, the polynomial-based approximation of the explicit solution maps introduced in~\cite{KL11} represents a perspective technique to minimize the memory footprint, however, it is not widely-available in some user-friendly way, yet.
 
-[ TODO: Introduce Tube MPC ]
+% [ TODO: Introduce Tube MPC ]
+In both, implicit and explicit MPC design problems, the tube MPC represents a natural step towards the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, Tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
 
-Moreover, Tube MPC represents a natural step towards the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, Tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
-
-[ TODO: Reformulate: ]
-
-We present the new package \texttt{MPTplus} extending the original \texttt{MPT} toolbox by the ability to design, tune, and validate both, non-explicit (implicit) and explicit Tube MPC controllers in a memory-efficient and user-friendly way.
-Next, we provide an extensive case study investigating the benefits of the developed package considering the advanced robust control of the laboratory device Flexy~\cite{CK19}. 
+% [ TODO: Main contributions]
+This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} augmenting the features of the original \texttt{MPT} toolbox by the notable methods introducing: (i) the framework for the explicit Tube MPC design, (ii) limits on a rate of a control actions for implicit/explicit Tube MPC design, and (iii) the polynomial approximation of any explicit MPC controller according to~\cite{KL11}. To demonstrate the benefits of the proposed \texttt{MPTplus} for real-world applications, we analyze the results of an extensive case study considering the implementation of the designed MPC controllers on the laboratory device having a fast-dynamics called Flexy~\cite{CK19}. 
 
 \section{Theoretical backgrounds}
 \label{sec:tube_mpc_theory}
