@@ -465,7 +465,7 @@ As the controlled as well as the manipulated variable were set in percentage, th
 
 The rest of the two explicit MPC setups is described in the next sections, according to the specific control approach, as the controllers differ in their structures and tuning parameters. Both controllers were constructed in \texttt{MATLAB 2020b} programming environment, using toolboxes \texttt{YALMIP R20210331}, \texttt{MPT 3.2.1}, \texttt{MPTplus},
 and solver \texttt{Gurobi 9.1.1}. The explicit MPCs were executed on
-CPU \texttt{AMD Ryzen 7 PRO 4750U}, 1.7ň,GHz with 16ň,GB RAM.
+CPU \texttt{AMD Ryzen 7 PRO 4750U}, 1.7\,GHz with 16\,GB RAM.
 
 \subsection{Tube explicit MPC with $\Delta-u$ constraints}
 \label{sec:tube_exp}
@@ -474,13 +474,13 @@ In this section, the implementation of tube explicit MPC with $\Delta-u$ constra
 As the uncertainties in the model were considered, the additive disturbance was considered in the MPC desing as well and was constrained as:
 \begin{eqnarray}
 	\label{eq:const_w}
-	-1ň,\% \le w \le 1ň,\%.
+	-1\,\% \le w \le 1\,\%.
 \end{eqnarray}
 
 Moreover, the change of the input variable was set to validate the control method implemented in the toolbox:
 \begin{eqnarray}
 	\label{eq:const_du}
-	-55ň,\% \le \Delta u \le 55ň,\%.
+	-55\,\% \le \Delta u \le 55\,\%.
 \end{eqnarray}
 By systematic tuning, the penalty matrices of the optimization problem in~\eqref{eq:tmpc} were set as:
 \begin{subequations}
