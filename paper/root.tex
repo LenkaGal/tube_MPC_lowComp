@@ -89,58 +89,56 @@ This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} 
 \section{Theoretical backgrounds}
 \label{sec:tube_mpc_theory}
 
-[ TOOD: Write the theoretical backgrounds on Tube MPC. ]
-
-[ TODO: Reformulate ]
-
-This section briefly reviews the main theoretical backgrounds of the original (rigid) Tube MPC design approach proposed in~\cite{MS05} and its formulation considering multi-parametric optimization.
+% [ TOOD: Write the theoretical backgrounds on Tube MPC, delta-U constraints, and polynomial approximation. ] 
+This section briefly reviews the main theoretical backgrounds of the currently implemented methods: (i) original (rigid) Tube MPC design approach proposed in~\cite{MS05} and its formulation considering multi-parametric optimization, (ii) limited rates on the control actions, and (iii) polynomial approximation of explicit control law.
 
 \subsection{Tube MPC design}
 \label{sec:tube_mpc}
 
-Consider an uncertain linear time-invariant (ULTI) system in the form:
+Given an uncertain linear time-invariant (ULTI) system defined as follows:
 \begin{eqnarray}
 	\label{eq:ulti_system}
 	x(t+T_{\mathrm{s}}) = A x(t) + B u(t) + E d(t), % \quad x(0) = x_{0},
 \end{eqnarray}
-where $t$ stands for the time instant in the discrete-time domain determined by the given sampling time $T_{\mathrm{s}}$. $A \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{x}}}$ is system matrix, $B \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{u}}}$ is input matrix, such that the matrix pair $(A,B)$ is stabilizable. $E \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{w}}}$ is disturbance matrix, $x \in \mathbb{R}^{n_{\mathrm{x}}}$ is the vector of the system states, $u \in \mathbb{R}^{n_{\mathrm{u}}}$ is control action, $d \in \mathbb{D} \subset \mathbb{R}^{n_{\mathrm{x}}}$ is bounded additive disturbance such that $\mathbb{D}$ is compact set containing the origin. 
-
-For the sake of notation, in ULTI system~\eqref{eq:ulti_system} holds:
+where $t$ is the time sample of the discrete-time domain defined using a sampling time $T_{\mathrm{s}}$. $A \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{x}}}$ is system matrix, $B \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{u}}}$ is input matrix, such that the matrix pair $(A,B)$ is stabilizable. $E \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{w}}}$ is disturbance matrix, $x \in \mathbb{R}^{n_{\mathrm{x}}}$ is the vector of the system states, $u \in \mathbb{R}^{n_{\mathrm{u}}}$ is control action, $d \in \mathbb{D} \subset \mathbb{R}^{n_{\mathrm{x}}}$ is bounded additive disturbance such that $\mathbb{D}$ is compact set containing the origin. 
+For the disturbance in~\eqref{eq:ulti_system} holds:
 \begin{eqnarray}
 	\label{eq:disturbance_set}
 	w = E \, d, ~ w \in \mathbb{W}, ~ \mathbb{W} = \left\{ w \in \mathbb{R}^{n_{\mathrm{x}}} : \Vert w \Vert_{\infty} \leq w_{\max} \right\}
 \end{eqnarray}
-for given upper bound value $w_{\max} = \Vert E \, d \Vert_{\infty}$, $\forall d \in \mathbb{D}$ such that $\mathbb{W} \supseteq E \, \mathbb{D}$ is the minimum volume hyper-box satisfying $\Vert w \Vert_{\infty} = w_{\max}$.
+where $w_{\max} = \Vert E \, d \Vert_{\infty}$ is an upper bound for $\forall d \in \mathbb{D}$ satisfying $\mathbb{W} \supseteq E \, \mathbb{D}$ is the minimum volume hyper-box such that $\Vert w \Vert_{\infty} = w_{\max}$.
 
-Moreover, the ULTI system in~\eqref{eq:ulti_system} is subject to state and input constraints
+Consider, the uncertain LTI system in~\eqref{eq:ulti_system} is constrained by
 \begin{eqnarray}
 	\label{eq:constraints_x_u}
 	x(t) \in \mathbb{X}, \quad u(t) \in \mathbb{U}, \quad \forall t \geq 0,
 \end{eqnarray}
-where $\mathbb{X} \in \mathbb{R}^{n_{\mathrm{x}}}$ and $\mathbb{U} \in \mathbb{R}^{n_{\mathrm{u}}}$ are polytopes, i.e., compact sets, containing origin in their strict interiors. 
+where $\mathbb{X} \in \mathbb{R}^{n_{\mathrm{x}}}$ and $\mathbb{U} \in \mathbb{R}^{n_{\mathrm{u}}}$ are polytopes containing origin in their strict interiors. 
 
-The ``tube'' introduced into the MPC design is evaluated by the convex set $\mathbb{T} \subset \mathbb{R}^{n_{\mathrm{x}}}$ and represents the origin for the perturbed system, see~\cite{MS05}. 
-%
-By plugging the LQ-optimal controller into~\eqref{eq:ulti_system} and updating the additive disturbances per~\eqref{eq:disturbance_set}, we obtain an autonomous discrete-time uncertain system 
-\begin{equation}
-	\label{eq:autosys}
-	x(t+T_{\mathrm{s}}) = (A + BK)x(t) + w(t).
-\end{equation}
-Subsequently, if $\mathbb{T}$ is a robust positive invariant (RPI) set for~\eqref{eq:autosys}, then we have that following statement holds 
-\begin{eqnarray}
-	\label{eq:tube}
-	\left( A + B K \right) \mathbb{T} \oplus \mathbb{W} \subseteq \mathbb{T},
-\end{eqnarray}
-where $\oplus$ denotes the Minkowski sum.
+The convex set denoted as a ``tube'' $\mathbb{T} \subset \mathbb{R}^{n_{\mathrm{x}}}$ is  constructed as an invariant approximations of the minimal robust positively invariant set using an algorithm described in~\cite{RK05}.
 
-Obviously, $\mathbb{T}$ in \eqref{eq:tube} is constructed as the minimal RPI set to minimize the conservativeness of Tube MPC design by:
-\begin{eqnarray}
-	\label{eq:tube_design}
-	\mathbb{T} = \sum_{i=0}^{\infty} \left( A + B K \right)^{i} \mathbb{W},
-\end{eqnarray}
-where $\Sigma$ represents a set addition. However, if the $K$ is not a dead-beat controller, then the minimal RPI set $\mathbb{T}$ does not necessarily lead to the polytope, see~\cite{MS05}. Therefore, $\mathbb{T}$ is designed as the outer approximation of the minimal RPI set.  Algorithm constructing such invariant approximations of the minimal robust positively invariant set $\mathbb{T}$ is proposed in detail in~\cite{RK05}.
+%By plugging the LQ-optimal controller into~\eqref{eq:ulti_system} and updating the additive disturbances per~\eqref{eq:disturbance_set}, we obtain an autonomous discrete-time uncertain system 
+%\begin{equation}
+%	\label{eq:autosys}
+%	x(t+T_{\mathrm{s}}) = (A + BK)x(t) + w(t).
+%\end{equation}
+%Subsequently, if $\mathbb{T}$ is a robust positive invariant (RPI) set for~\eqref{eq:autosys}, then we have that following statement holds 
+%\begin{eqnarray}
+%	\label{eq:tube}
+%	\left( A + B K \right) \mathbb{T} \oplus \mathbb{W} \subseteq \mathbb{T},
+%\end{eqnarray}
+%where $\oplus$ denotes the Minkowski sum.
 
-The conventional (rigid) Tube MPC design problem has the form:
+%Obviously, $\mathbb{T}$ in \eqref{eq:tube} is constructed as the minimal RPI set to minimize the conservativeness of Tube MPC design.
+%by:
+%\begin{eqnarray}
+%	\label{eq:tube_design}
+%	\mathbb{T} = \sum_{i=0}^{\infty} \left( A + B K \right)^{i} \mathbb{W},
+%\end{eqnarray}
+%where $\Sigma$ represents a set addition. However, if the $K$ is not a dead-beat controller, then the minimal RPI set $\mathbb{T}$ does not necessarily lead to the polytope, see~\cite{MS05}. Therefore, $\mathbb{T}$ is designed as the outer approximation of the minimal RPI set.  
+
+
+The conventional (rigid) Tube MPC design problem has the form~\cite{MS05}:
 \begin{subequations}
 	\label{eq:tmpc}
 	\begin{eqnarray}
@@ -157,24 +155,35 @@ The conventional (rigid) Tube MPC design problem has the form:
 		\label{eq:tmpc_constraints_input}
 		&\,& \hat{u}_{k} \in \mathbb{U} \ominus K \, \mathbb{T} , \\
 		\label{eq:tmpc_constraints_input_delta_k}
-		&\,& \Delta \hat{u}_{l} \in \mathbb{U}_{\Delta} \ominus K \, \mathbb{T} , \\
-		\label{eq:tmpc_constraints_input_delta_0}
-		&\,& \hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U}_{\Delta} , \quad
+		&\,& \Delta \hat{u}_{l} \in \mathbb{U}_{\Delta} \ominus K \, \mathbb{T} , % \\
+		%\label{eq:tmpc_constraints_input_delta_0}
+		%&\,& \hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U}_{\Delta} , \quad
 	\end{eqnarray}
 \end{subequations}
-where $\forall k = 0, \dots, N-1$,  $\forall l = 1, \dots, N-1$, $N$ is prediction horizon.
-The decision variables\footnote{Obviously, dense formulation of~\eqref{eq:tmpc} omits $\hat{x}_{k}$ as the decision variables, except for $\hat{x}_{0}$.} $\hat{u}_{k}$, $\hat{x}_{k}$, are optimized subject to the nominal system behaviour in~\eqref{eq:tmpc_model}, i.e., an idealized system without the impact of any uncertain parameters. The state and input constraints in~\eqref{eq:constraints_x_u} are respectively adopted in~\eqref{eq:tmpc_constraints_state}, \eqref{eq:tmpc_constraints_input} to respect the RPI set $\mathbb{T}$ in~\eqref{eq:tube} assuming: $(\mathbb{X} \ominus \mathbb{T})$, $(\mathbb{U} \ominus K \, \mathbb{T})$ are non-empty sets, convex by definition. Analogous, the initial condition in~\eqref{eq:tmpc_rpi} takes into account the RPI set $\mathbb{T}$ keeping the perturbed system state vector $x(t)$ close to its nominal counterpart $\hat{x}_{0}$. 
-The terminal constraint in~\eqref{eq:tmpc_constraints_terminal} has the conventional form.
-The quadratic cost function in~\eqref{eq:tmpc_cost} is minimized considering the $Q$, $R$, $P$. Note, $\Vert \hat{x}_{N} \Vert_{P}^{2}$ denotes simplified notation for the weighted two norm: $\hat{x}_{N}^{\top} P \hat{x}_{N}$, and analogous hold for the remaining terms. 
-The corresponding stability and recursive feasibility proofs of~\eqref{eq:tmpc} are documented in~\cite{MS05}.
+for $\forall k = 0, \dots, N-1$,  $\forall l = 1, \dots, N-1$, and for prediction horizon $N$. Vectors $\hat{u}_{k}$, $\hat{x}_{k}$ are decision variables optimized w.r.t. the nominal LTI system in~\eqref{eq:tmpc_model}, without any perturbations of the disturbance $w$. 
+The squared $2-$norm objective function in~\eqref{eq:tmpc_cost} is minimized for the symmetric positive definite penalty factors $Q \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{x}}}$, $R \in \mathbb{R}^{n_{\mathrm{u}} \times n_{\mathrm{u}}}$, $P \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{x}}}$. 
+The stability and recursive feasibility of Tube MPC design problem in~\eqref{eq:tmpc} has been proved in~\cite{MS05}.
 
-The control action $u(t)$, which is applied to the controlled plant in~\eqref{eq:ulti_system}, is determined by the control law $\kappa : \mathbb{X}_{\mathrm{F}} \rightarrow \mathbb{U}$
+Finally, the control action $u(t)$ to be implemented into to the uncertain LTI system in~\eqref{eq:ulti_system} is given by the control law $\kappa : \mathbb{X}_{\mathrm{F}} \rightarrow \mathbb{U}$
 \begin{eqnarray}
 	\label{eq:tmpc_control_law}
 	\kappa(x(t)) = \hat{u}_{0}^{\star} + K \left( x(t) - \hat{x}_{0}^{\star} \right),
 \end{eqnarray}
-where $\star$ denotes the solution of the optimization problem in~\eqref{eq:tmpc} and $\mathbb{X}_{\mathrm{F}} \subseteq \mathbb{R}^{n_{\mathrm{x}}}$ is the corresponding domain, i.e., the feasibility set of the optimized initial conditions $\hat{x}_{0}$ of~\eqref{eq:tmpc}. 
-Tube MPC is implemented in receding horizon fashion, i.e., just the first control action $u(t) = \kappa(x(t))$ is applied to the plant and the optimization problem in~\eqref{eq:tmpc} is re-computed in each control step. 
+where symbol $\star$ in the optimal solution of the MPC design problem in~\eqref{eq:tmpc} and the feasibility set $\mathbb{X}_{\mathrm{F}} \subseteq \mathbb{R}^{n_{\mathrm{x}}}$ of the optimized initial condition $\hat{x}_{0}$ of~\eqref{eq:tmpc} represents its domain. 
+
+%Tube MPC is implemented in receding horizon fashion, i.e., just the first control action $u(t) = \kappa(x(t))$ is applied to the plant and the optimization problem in~\eqref{eq:tmpc} is re-computed in each control step. 
+
+The actuators of the physical systems are often under limited rates on the control actions formulated by:
+\begin{eqnarray}
+	\label{eq:rate_constraints_x_u}
+	\Delta u(t) = u(t) - u(t_{-}) \in \mathbb{U}_{\Delta} ,
+\end{eqnarray}
+where $\Delta u(t) = u(t) - u(t_{-})$ is the rate of control action and $\mathbb{U}_{\Delta} \in \mathbb{R}^{n_{\mathrm{u}}}$ is the corresponding convex set bounding the rates. Then, the Tube MPC design problem in~\eqref{eq:tmpc} is extended by the linear constraint having the form: 
+\begin{eqnarray}
+	\label{eq:tmpc_constraints_input_delta_0}
+	\hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U}_{\Delta} , 
+\end{eqnarray}
+leading to the augmented vector of parameters $[x(t)^{\top}, u(t_{-})^{\top}]^{\top} \in \mathbb{R}^{n_{\mathrm{x}} + n_{\mathrm{u}}}$, in case of the multi-parametric solution of~\eqref{eq:tmpc}.
 
 %% OUTPUT TUBE MPC
 %
@@ -276,7 +285,7 @@ Let us presume that there exists a PWA Lyapunov function $L$ for the considered 
 \begin{eqnarray}
 	\label{eq:stab_tube}
 	\mathcal{T}(L, \gamma) := \begin{Bmatrix}
-		[x^\top, u^\top]^\top \, : \, u \in \mathbb{U}, x \in \mathbb{X}_{\mathrm{F}} , A x + B u \in \\mathbb{X}_{\mathrm{F}} \\
+		[x^\top, u^\top]^\top \, : \, u \in \mathbb{U}, x \in \mathbb{X}_{\mathrm{F}} , A x + B u \in \mathbb{X}_{\mathrm{F}} \\
 		L(f_{\mathrm{CL}}) \le \gamma L(x)
 	\end{Bmatrix} , 
 \end{eqnarray}
