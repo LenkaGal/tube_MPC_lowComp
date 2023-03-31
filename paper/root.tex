@@ -87,7 +87,7 @@ The industrial implementation of the MPC is limited by the runtime effort and ad
 In this framework, the polynomial-based approximation of the explicit solution maps introduced in~\cite{KL11} represents a perspective technique to minimize the memory footprint, however, it is not widely-available in some user-friendly way, yet.
 
 % [ TODO: Introduce Tube MPC ]
-In both, implicit and explicit MPC design problems, the tube MPC represents a natural step towards the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, Tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
+In both, implicit and explicit MPC design problems, the Tube MPC represents a natural step towards the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, Tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
 
 % [ TODO: Main contributions]
 This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} augmenting the features of the original \texttt{MPT} toolbox by the notable methods introducing: (i) the framework for the memory-efficient explicit Tube MPC design, (ii) limits on a rate of control actions for implicit/explicit Tube MPC design, and (iii) the polynomial approximation of any explicit MPC controller according to~\cite{KL11}. To demonstrate benefits of the proposed \texttt{MPTplus} for real-world applications, we analyze results of an extensive case study considering the implementation of designed MPC controllers on the laboratory device having a fast-dynamics called Flexy~\cite{CK19}. 
@@ -342,7 +342,7 @@ Alternatively, install the \texttt{MPTplus} by setting the corresponding path in
 \subsection{Explicit tube MPC design}
 \label{sec:mptplus_tube_mpc}
 
-In this section we will show how one can easily derive an explicit tube MPC policy. For demonstrative reasons, we will assume a double integrator model adopted from~\cite{MS05}:
+In this section we will show how one can easily derive an explicit Tube MPC policy. For demonstrative reasons, we will assume a double integrator model adopted from~\cite{MS05}:
 \begin{eqnarray}
 	\label{eq:example_system}
 	x(t+T_\text{s}) = 
@@ -373,7 +373,7 @@ that is subjected to state $[-200, -2]^{\top} \preceq x(t) \preceq [200, 2]^{\to
 
 
 
-First, assume the implicit tube MPC design. We defined ``\verb|model|'', i.e., object that contains prediction model~\eqref{eq:example_system} as in~\eqref{eq:tmpc_model}, constraints~\eqref{eq:example_system:cons} transformed into~\eqref{eq:tmpc_constraints_state}-\eqref{eq:tmpc_constraints_input}, penalty matrices, the appertain LQR terminal penalty and terminal set as in~\eqref{eq:tmpc_cost} and~\eqref{eq:tmpc_constraints_terminal}, respectively. 
+First, assume the implicit Tube MPC design. We defined ``\verb|model|'', i.e., object that contains prediction model~\eqref{eq:example_system} as in~\eqref{eq:tmpc_model}, constraints~\eqref{eq:example_system:cons} transformed into~\eqref{eq:tmpc_constraints_state}-\eqref{eq:tmpc_constraints_input}, penalty matrices, the appertain LQR terminal penalty and terminal set as in~\eqref{eq:tmpc_cost} and~\eqref{eq:tmpc_constraints_terminal}, respectively. 
 Finally, using the \texttt{MPTplus}, we may simply construct and evaluate the implicit Tube MPC controller by typing:
 \begin{verbatim}
 model=ULTISystem('A', [1, 1; 0, 1],...
@@ -481,7 +481,7 @@ where initial state conditions are defined by the mouse.
 \subsection{Complexity reduction of MPC controllers}
 \label{sec:code_mpt3lowcom}
 
-Relevant group of \texttt{MPT} features includes the module \texttt{LowCom}~\cite{KH15} that provides various complexity reduction techniques of explicit MPC policies. Although the \texttt{LowCom} is not limited just for the tube MPC controllers, we consider the explicit tube MPC controller designed in Section~\ref{sec:mptplus_tube_mpc} in the following example.
+Relevant group of \texttt{MPT} features includes the module \texttt{LowCom}~\cite{KH15} that provides various complexity reduction techniques of explicit MPC policies. Although the \texttt{LowCom} is not limited just for the Tube MPC controllers, we consider the explicit Tube MPC controller designed in Section~\ref{sec:mptplus_tube_mpc} in the following example.
 
 The first memory reduction technique is the Optimal Region Merging (ORM) method that aims to join critical regions with the same closed-loop feedback policy and whose union is a convex set. This method can be called: 
 \begin{verbatim}
@@ -528,7 +528,7 @@ model.u.with('deltaMax')
 model.u.deltaMin = -0.5
 model.u.deltaMax =  0.5
 \end{verbatim}
-to the original LTI system definition, see section III-B. Then we can evoke construction of the implicit tube MPC policy via:
+to the original LTI system definition, see section III-B. Then we can evoke construction of the implicit Tube MPC policy via:
 \begin{verbatim}
 N = 2
 option={'solType',1,'LQRstability',1}
@@ -603,10 +603,10 @@ Notice that the evaluation requires an additional parameter \verb|u_prev|, i.e. 
 	\end{center}
 \end{figure}
 
-This section addresses the experimental implementation of the two presented control methods, i.e., the tube explicit MPC with rate constraints, and polynomial approximation of an explicit MPC controller. To provide experimental results presenting the proposed methods, the case study was realized on a dynamical SISO device Flexy2~\cite{flexy2}, see Figure~\ref{fig:flexy2}. The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
+This section addresses the experimental implementation of the two presented control methods, i.e., the Tube explicit MPC with rate constraints, and polynomial approximation of an explicit MPC controller. To provide experimental results presenting the proposed methods, the case study was realized on a dynamical SISO device Flexy2~\cite{flexy2}, see Figure~\ref{fig:flexy2}. The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
 by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend $b(t)$ in percentage is assumed as the controlled variable, and the fan speed $v(t)$ in percentage is a manipulated variable.
 
-Flexy2 is a system with non-linear dynamics, as the sensitivity of the flex bend decreases when increasing fan speed. Moreover, the oscillations are minor at higher fan speed. Lastly, the measurement noise is also present. These challenges make this device a suitable candidate for the implementation of tube MPC. As the system is naturally very fast and requires low sampling time with fast evaluation of the control inputs, the explicit solution of tube MPC is considered. In this paper, the goal was to control the flex sensor bend $b(t)$ to a steady-state value $b^\text{s}$ and reject effect of a disturbance $d(t)$.
+Flexy2 is a system with non-linear dynamics, as the sensitivity of the flex bend decreases when increasing fan speed. Moreover, the oscillations are minor at higher fan speed. Lastly, the measurement noise is also present. These challenges make this device a suitable candidate for the implementation of Tube MPC. As the system is naturally very fast and requires low sampling time with fast evaluation of the control inputs, the explicit solution of Tube MPC is considered. In this paper, the goal was to control the flex sensor bend $b(t)$ to a steady-state value $b^\text{s}$ and reject effect of a disturbance $d(t)$.
 
 \begin{figure}
 	\begin{center}
@@ -644,7 +644,7 @@ We would like to note that, due to the paper limitations, all \texttt{MPTplus} c
 \subsection{Tube explicit MPC with rate constraints}
 \label{sec:tube_exp}
 
-In this section, the implementation of tube explicit MPC with rate constraints is described. Let us consider the system model in~\eqref{eq:model_A_B} and constraints stated in~\eqref{eq:const_du}. 
+In this section, the implementation of Tube explicit MPC with rate constraints is described. Let us consider the system model in~\eqref{eq:model_A_B} and constraints stated in~\eqref{eq:const_du}. 
 As the uncertainties in the model were considered, the additive disturbance was considered in the MPC design as well and was constrained as:
 \begin{eqnarray}
 	\label{eq:const_w}
@@ -681,7 +681,7 @@ Furthermore, the terminal set was constructed as the LQR set and was defined by 
 \end{eqnarray}
 The prediction horizon $N$ was set to 30 steps. 
 %The associated explicit MPC policy was constructed via \texttt{MPTplus} framework by execution several lines of code as described in Section~\ref{sec:explicit_mpc}. The resulting feedback law~\eqref{eq:tmpc_control_law_pwa} consisted of $n_\text{r} = 12$ critical regions.
-After the construction of the tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Figure~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b(t)$. In Figure~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v(t)$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\%$, while rejecting the effect of the two disturbances occurring at times 5\,s and 10\,s. 
+After the construction of the Tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Figure~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b(t)$. In Figure~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v(t)$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\%$, while rejecting the effect of the two disturbances occurring at times 5\,s and 10\,s. 
 
 When observing Figures~\ref{fig:deltaU_y}, \ref{fig:deltaU_u}, it can be seen that the goal of the control was achieved. The effects of both disturbances were rejected, with respect to the constraints on the manipulated and controlled variables. Moreover, the constraints on the change of the manipulated variable were satisfied as well.
 
@@ -691,7 +691,7 @@ When observing Figures~\ref{fig:deltaU_y}, \ref{fig:deltaU_u}, it can be seen th
 \begin{figure}[bp!]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{images/approximation.eps}
-		\caption{Approximation of the optimal explicit tube MPC. The blue line represents the optimal control law, the yellow area is stability tube, and the red line represents the polynomial approximation of the optimal control law.}
+		\caption{Approximation of the optimal explicit Tube MPC. The blue line represents the optimal control law, the yellow area is stability tube, and the red line represents the polynomial approximation of the optimal control law.}
 		\label{fig:approx}
 	\end{center}
 \end{figure}
@@ -716,7 +716,7 @@ Next, the polynomial controller~\eqref{eq:poly_control_law} was created based on
 \begin{figure}[bp!]
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{images/poly_b.eps}
-		\caption{Comparison of optimal explicit tube MPC and its polynomial approximation. Trajectory of controlled variable.}
+		\caption{Comparison of optimal explicit Tube MPC and its polynomial approximation: trajectory of controlled variable.}
 		\label{fig:poly_y}
 	\end{center}
 	%\end{figure}
@@ -724,7 +724,7 @@ Next, the polynomial controller~\eqref{eq:poly_control_law} was created based on
 	%\begin{figure}
 	\begin{center}
 		\includegraphics[width=0.5\textwidth]{images/poly_v.eps}
-		\caption{Comparison of optimalexplicit tube MPC and its polynomial approximation. Trajectory of manipulated variable.}
+		\caption{Comparison of optimal explicit Tube MPC and its polynomial approximation: trajectory of manipulated variable.}
 		\label{fig:poly_u}
 	\end{center}
 \end{figure}
