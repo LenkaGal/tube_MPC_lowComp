@@ -28,10 +28,11 @@ A software package for MPC design and tuning: MPT+
 }
 
 \author{Juraj Holaza, Lenka Gal\v{c}\'{i}kov\'{a}, Juraj Oravec, Michal Kvasnica
-\thanks{Authors are with Faculty of Chemical and Food Technology,
-		Slovak University of Technology in Bratislava, Bratislava, SK-812 37, Slovakia 
-        \texttt{\{juraj.holaza,lenka.galcikova,juraj.oravec\}@stuba.sk}}
+	\thanks{Authors are with Faculty of Chemical and Food Technology,
+		Slovak University of Technology in Bratislava, 812~37 Bratislava, Slovakia,
+		\texttt{juraj.holaza@stuba.sk}}
 }
+
 
 \begin{document}
 
@@ -501,12 +502,13 @@ EMPCsim = EMPC.simplify('separation')
 \end{verbatim}
 where \verb|ETMPCsim| denotes the resulting simplified controller. With the considered control setup, the separation-based controller has removed all $120$ regions with saturated feedback law which represents the reduction of $21\%$ w.r.t. its complex counterpart \verb|ETMPC|.
 
-The complexity reduction using the polynomial approximation significantly reduces the memory footprint by replacing the whole explicit solution map by a coefficients of the polynomials. The real-time runtimes are also decreased as the point location problem is replaced by the polynomial evaluation, see Section~\ref{sec:polynomial}. This approach is called and evaluated by:
+The complexity reduction using the polynomial approximation significantly reduces the memory footprint by replacing the whole explicit solution map by a coefficients of the polynomials~\cite{KL11}. The real-time runtimes are also decreased as the point location problem is replaced by the polynomial evaluation, see Section~\ref{sec:polynomial}. This approach is called, depicted, and evaluated by:
 \begin{verbatim}
 EMPCsim = PolynomialMPC(EMPC,options)
+EMPCsim.plot
 u = EMPCsim.evaluate(x0)
 \end{verbatim}
-where parameter \verb|options| provides user additional options for the approximation such as degree of the polynomial $\polydegree$, decay of the Lyapunov function $\gamma$, and many more.\footnote{For the complete list of options are available e.g. by calling \texttt{help PolynomialMPC} in \texttt{MATLAB}. We note that if a parameter is not provided, then the algorithm uses its default value.}
+where parameter \verb|options| provides user additional options for the approximation such as degree of the polynomial $\polydegree$, decay of the Lyapunov function $\gamma$, and many more.\footnote{For the complete list of options are available, e.g., by calling \texttt{help PolynomialMPC} in \texttt{MATLAB}. We note that if a parameter is not provided, then the algorithm uses its default value.}
 The experimental results are analyzed in detail in Section~\ref{sec:polynomial_exp}.
 
 % TEMP ZZZ
@@ -544,9 +546,9 @@ Finally, evaluation of these controllers for an initial state $x(t) = [-1, 1]^\t
 x0 = [1; -1]
 u_prev = 0;
 [u_0, feasible] = TMPC.evaluate(x0,...
-'u.previous', u_prev)
+                   'u.previous', u_prev)
 [u_0, feasible] = ETMPC.evaluate(x0,...
-'u.previous', u_prev)
+                   'u.previous', u_prev)
 \end{verbatim}
 that lead to the same closed-loop control action $u_0 = [0.3678]$.
 Notice that the evaluation requires an additional parameter \verb|u_prev|, i.e. control action from the previous sampling period $u(t_{-})$ as in~\eqref{eq:rate_constraints_x_u}.
