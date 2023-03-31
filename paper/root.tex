@@ -62,20 +62,20 @@ The MPC design problem is addressed in plenty of well-developed software tools. 
 
 Following is a brief review of the MPC design software limited just for the tools offering an interface for the \texttt{MATLAB}\footnote{\texttt{MATLAB}, MathWorks, Inc.: \texttt{\url{https://www.mathworks.com}}} programming environment. We refer the reader to~\cite{KF18,LT17,HS22}, 
 % ~\cite{KF18,LT17, OSQP,QPALM,qpDUNES,Ferreau2014,HPIPM,CVXGEN,EJ21,HS22}, 
-and the references therein, for the review on the tailored solvers and tools supporting MPC design and its evaluation using also other programming environments, e.g., \texttt{Python}\footnote{\texttt{Python}, Python Software Foundation: \texttt{\url{https://www.python.org}}}, \texttt{Julia} \footnote{\texttt{Julia}, JuliaLang.org: \texttt{\url{https://julialang.org}}}, etc. Such the packages include QP-solvers \texttt{qpDUNES}~\cite{qpDUNES}, \texttt{QPALM}~\cite{QPALM}, \texttt{CVXGEN}~\cite{CVXGEN}, and the tools introducing the distributed optimization \texttt{OSQP}~\cite{OSQP}, \texttt{ALADIN}-$\alpha$~\cite{EJ21}, to name a few. 
+and the references therein, for the review on the tailored solvers and tools supporting MPC design and its evaluation using also other programming environments, e.g., \texttt{Python}\footnote{\texttt{Python}, Python Software Foundation: \texttt{\url{https://www.python.org}}}, \texttt{Julia} \footnote{\texttt{Julia}, JuliaLang.org: \texttt{\url{https://julialang.org}}}, etc. Such packages include QP-solvers \texttt{qpDUNES}~\cite{qpDUNES}, \texttt{QPALM}~\cite{QPALM}, \texttt{CVXGEN}~\cite{CVXGEN}, and tools that introduce distributed optimization \texttt{OSQP}~\cite{OSQP}, \texttt{ALADIN}-$\alpha$~\cite{EJ21}, to name a few. 
 % \texttt{Python}~\cite{PYTHON}, \texttt{Julia}~\cite{JULIA}, etc.
 
 Commercial \texttt{MPC Toolbox}~\cite{MPC_toolbox} for \texttt{MATLAB} addresses various classes of the MPC design problems, including the construction of the adaptive, explicit, gain-scheduled, and non-linear MPC controllers. This toolbox provides several built-in solvers and also a dedicated user interface \texttt{MPC Designer App} for the controller tuning. 
 %
 The non-linear MPC design problems are efficiently solved using the \texttt{ACADO Toolkit}~\cite{ACADO_Toolkit}. The non-convex optimization problem is solved by the sequential quadratic programming (SQP) approach.  \texttt{ACADO Toolkit} evaluates the library-dependent \texttt{C/C++} code and provides an interface for \texttt{MATLAB}. 
 %
-\texttt{CasADi}~\cite{CasADi} represents another toolbox suitable for the non-liner MPC design. This open-source package also provides the interfaces for \texttt{MATLAB} and \texttt{Python}. 
+\texttt{CasADi}~\cite{CasADi} represents another toolbox suitable for the non-liner MPC design. This open-source package also provides interfaces for \texttt{MATLAB} and \texttt{Python}. 
 %
 The non-linear MPC can be designed also using the open-source toolbox \texttt{MATMPC}~\cite{MATMPC}. 
 %
 \texttt{YALMIP}~\cite{L04} toolbox is a widely-used modelling parser focused on the various classes of optimization problems, including non-convex optimization. \texttt{YALMIP} provides also support for the MPC design problems. 
 %
-Similar to \texttt{YALMIP} toolbox, the \texttt{CVX}~\cite{GB08} is focused on the modelling of the various classes of convex optimization problems suitable for MPC controller design. 
+Similar to \texttt{YALMIP} toolbox, the \texttt{CVX}~\cite{GB08} is focused on modelling of various classes of convex optimization problems suitable for MPC controller design. 
 
 % [ TODO: Introduce MPT ]
 The \texttt{Multi-Parametric Toolbox} (\texttt{MPT})~\cite{MPT3} for \texttt{MATLAB} represents a widely-used software package for the implicit (non-explicit) and explicit MPC design, multi-parametric optimization, and operations over the convex sets. \texttt{MPT} integrates many tools enabling efficient construction, tuning, and validation of the advanced MPC controllers. 
@@ -89,7 +89,7 @@ In this framework, the polynomial-based approximation of the explicit solution m
 In both, implicit and explicit MPC design problems, the tube MPC represents a natural step towards the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, Tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
 
 % [ TODO: Main contributions]
-This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} augmenting the features of the original \texttt{MPT} toolbox by the notable methods introducing: (i) the framework for the memory-efficient explicit Tube MPC design, (ii) limits on a rate of control actions for implicit/explicit Tube MPC design, and (iii) the polynomial approximation of any explicit MPC controller according to~\cite{KL11}. To demonstrate the benefits of the proposed \texttt{MPTplus} for real-world applications, we analyze the results of an extensive case study considering the implementation of the designed MPC controllers on the laboratory device having a fast-dynamics called Flexy~\cite{CK19}. 
+This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} augmenting the features of the original \texttt{MPT} toolbox by the notable methods introducing: (i) the framework for the memory-efficient explicit Tube MPC design, (ii) limits on a rate of control actions for implicit/explicit Tube MPC design, and (iii) the polynomial approximation of any explicit MPC controller according to~\cite{KL11}. To demonstrate benefits of the proposed \texttt{MPTplus} for real-world applications, we analyze results of an extensive case study considering the implementation of designed MPC controllers on the laboratory device having a fast-dynamics called Flexy~\cite{CK19}. 
 
 \section{Theoretical backgrounds}
 \label{sec:tube_mpc_theory}
@@ -109,7 +109,7 @@ where $t$ is the time sample of the discrete-time domain defined using a samplin
 For the disturbance in~\eqref{eq:ulti_system} holds:
 \begin{eqnarray}
 	\label{eq:disturbance_set}
-	w = E \, d, ~ w \in \mathbb{W}, ~ \mathbb{W} = \left\{ w \in \mathbb{R}^{n_{\mathrm{x}}} : \Vert w \Vert_{\infty} \leq w_{\max} \right\}
+	w = E \, d, ~ w \in \mathbb{W}, ~ \mathbb{W} = \left\{ w \in \mathbb{R}^{n_{\mathrm{x}}} : \Vert w \Vert_{\infty} \leq w_{\max} \right\},
 \end{eqnarray}
 where $w_{\max} = \Vert E \, d \Vert_{\infty}$ is an upper bound for $\forall d \in \mathbb{D}$ satisfying $\mathbb{W} \supseteq E \, \mathbb{D}$ is the minimum volume hyper-box such that $\Vert w \Vert_{\infty} = w_{\max}$.
 
@@ -675,7 +675,7 @@ Furthermore, the terminal set was constructed as the LQR set and was defined by 
 	\begin{bmatrix}
 		31.8694\\	
 		21.2463
-	\end{bmatrix}
+	\end{bmatrix}.
 \end{eqnarray}
 The prediction horizon $N$ was set to 30 steps. 
 %The associated explicit MPC policy was constructed via \texttt{MPTplus} framework by execution several lines of code as described in Section~\ref{sec:explicit_mpc}. The resulting feedback law~\eqref{eq:tmpc_control_law_pwa} consisted of $n_\text{r} = 12$ critical regions.
