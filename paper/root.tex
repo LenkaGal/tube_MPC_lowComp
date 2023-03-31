@@ -332,9 +332,9 @@ The \texttt{MPTplus} toolbox extends the functionality of the \texttt{MPT} toolb
 \label{sec:installation}
 
 The \texttt{MPTplus} toolbox is freely available at \texttt{GitHub}\footnote{\texttt{MPTplus: \url{https://github.com/holaza/mptplus}}}. We recommend to install the package via \texttt{tbxManager}\footnote{\texttt{tbxManager: \url{https://www.tbxmanager.com}}} by typping:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 	tbxmanager install mptplus
-\end{lstlisting}
+\end{verbatim} 
 Alternatively, install the \texttt{MPTplus} by setting the corresponding path in \texttt{MATLAB}. 
 
 
@@ -374,7 +374,7 @@ that is subjected to state $[-200, -2]^{\top} \preceq x(t) \preceq [200, 2]^{\to
 
 First, assume the implicit tube MPC design. We defined ``\verb|model|'', i.e., object that contains prediction model~\eqref{eq:example_system} as in~\eqref{eq:tmpc_model}, constraints~\eqref{eq:example_system:cons} transformed into~\eqref{eq:tmpc_constraints_state}-\eqref{eq:tmpc_constraints_input}, penalty matrices, the appertain LQR terminal penalty and terminal set as in~\eqref{eq:tmpc_cost} and~\eqref{eq:tmpc_constraints_terminal}, respectively. 
 Finally, using the \texttt{MPTplus}, we may simply construct and evaluate the implicit Tube MPC controller by typing:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 model=ULTISystem('A', [1, 1; 0, 1],...
                  'B', [0.5; 1],...
                  'E', [1, 0; 0, 1])
@@ -394,14 +394,14 @@ TMPC = TMPCController(model,N,option)
 % TMPC evaluation
 x0 = [-5; 2]
 u = TMPC.evaluate(x0)
-\end{lstlisting}
+\end{verbatim}
 leading to the optimal control action $u_{0}^{\star} = 1$ for the given initial state $x(t) = [-5, 2]^\top$.
 It is worth noting that the terminal set and terminal penalty are enforced through the option parameter \texttt{LQRstability}, while the secondary parameter $\texttt{solType} = 1$ specifies type of the returned optimized variables to be as in~\eqref{eq:tmpc_control_law}, i.e., that are fed directly to the controlled system in~\eqref{eq:ulti_system}.
 
 To design the associated explicit MPC policy we can evoke:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 	ETMPC = TMPC.toExplicit
-\end{lstlisting}
+\end{verbatim}
 what constructs the explicit feedback law \verb|ETMPC| as in~\eqref{eq:tmpc_control_law_pwa} that is defined over $n_\text{r} = 520$ critical regions in $n_\text{x} = 2$ dimensional space.
 
 %\subsection{Explicit tube MPC controllers}
@@ -413,26 +413,26 @@ what constructs the explicit feedback law \verb|ETMPC| as in~\eqref{eq:tmpc_cont
 % Since the implicit MPC policy \verb|TMPC| is currently restricted only to evaluation via \verb|TMPC.optimizer(x)|, for any feasible state vector $x\in\mathbb{X}_{\mathrm{F}}$, we devote this section to its explicit counterpart \verb|ETMPC|.
 
 %To design explicit MPC policy that returns the control action as in~\eqref{eq:tmpc_control_law}, i.e., that is fed directly to the controlled system in~\eqref{eq:ulti_system}, we can evoke:
-%\begin{lstlisting}[style=Matlab-editor]
+%\begin{verbatim}
 %ETMPC = TMPC.toExplicit
-%\end{lstlisting}
+%\end{verbatim}
 %% what constructs explicit controller \verb|ETMPC| that is defined over $n_\text{r} = 565$ critical regions in $n_\text{x} = 2$ dimensional space.
 %what constructs explicit controller \verb|ETMPC| that is defined over $n_\text{r} = 520$ critical regions in $n_\text{x} = 2$ dimensional space.
 
 
 The evaluation of the exact decision variables $\hat{u}_{0}^{\star} = 0.7026$, $\hat{x}_{0}^{\star} = [-5.0516, -1.7500]^{\top}$ in~\eqref{eq:tmpc_control_law}, i.e., the optimizers $\left[ \hat{u}_{0}^{\star\top}, \hat{x}_{0}^{\star\top} \right]^{\top}$ in~\eqref{eq:tmpc}, we need to change the \texttt{solType} parameter to zero and revoke the MPC syntheses via:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 option={'LQRstability',1, 'solType',0}
 TMPC = TMPCController(model,N,option)
 ux = TMPC.optimizer(x0)
-\end{lstlisting}
-%	\begin{lstlisting}[style=Matlab-editor]
+\end{verbatim}
+%	\begin{verbatim}
 	%		ops.solType = 0
 	%		[TMPC,ETMPC] = TMPCController(model,N,ops)
 	%		ux = ETMPC.evaluate(x0)
-	%	\end{lstlisting}
+	%	\end{verbatim}
 The resulting MPC policy \texttt{TMPC} preserves all of the computed/employed information inside of its structure. To respectively access and depict them, if possible, $K = [-0.6609, -1.3261]$ in~\eqref{eq:tmpc_control_law}, $\mathbb{T}$ employed in~\eqref{eq:tmpc}, $\mathbb{X} \ominus \mathbb{T}$ in~\eqref{eq:tmpc_constraints_state}, $\mathbb{U} \ominus K \, \mathbb{T}$ in~\eqref{eq:tmpc_constraints_terminal} use:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 K = TMPC.TMPCparams.K
 Tube = TMPC.TMPCparams.Tube
 figure, Tube.plot()
@@ -440,42 +440,42 @@ XT = TMPC.TMPCparams.Xset
 figure, XT.plot()
 UKT = TMPC.TMPCparams.Uset
 figure, UKT.plot()
-\end{lstlisting}
+\end{verbatim}
 
 To graphically analyse our explicit controller, we can type:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 figure; ETMPC.partition.plot()
 figure; ETMPC.feedback.fplot()
 figure; ETMPC.cost.fplot()
-\end{lstlisting}
+\end{verbatim}
 to plot the polytopic partition~\eqref{eq:tmpc_partition}, the PWA feedback law~\eqref{eq:tmpc_control_law_pwa}, and the PWQ value function as defined in~\eqref{eq:tmpc_cost}, respectively.\footnote{We note that while both, the PWA feedback law and the PWQ value function, are given as solution to~\eqref{eq:tmpc} the solution~\eqref{eq:tmpc_control_law_pwa_particular} was posterior transformed into~\eqref{eq:tmpc_control_law_pwa}, however, the value function preserves its form of~\eqref{eq:tmpc_cost}.}
 
 To perform a closed-loop simulation of a computed explicit Tube MPC controller one can define an object:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 loop = ClosedLoop(ETMPC,model)
-\end{lstlisting}
+\end{verbatim}
 where \verb|model| can contain even a modified version of~\eqref{eq:example_system}, i.e., the controlled system can be different from the prediction model used to design the explicit policy \verb|ETMPC|. Subsequently, we can execute the closed-loop simulation by:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 Nsim = 10
 data = loop.simulate(x0, Nsim)
-\end{lstlisting}	
+\end{verbatim}	
 with \verb|x0| denoting the initial condition and \verb|Nsim| number of the closed-loop simulation steps. The generated \verb|data| structure contains all important information, e.g., the closed-loop profiles of control inputs \verb|data.U|, applied disturbances \verb|data.D|, states \verb|data.X|, and the cost of~\eqref{eq:tmpc_cost} at each time step, to name a few.
 Alternatively, one can create a customized loop, where the control input of \verb|ETMPC| can be obtained by typing: 
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 u = ETMPC.evaluate(x)
-\end{lstlisting}
+\end{verbatim}
 for any given feasible state vector $x\in\mathbb{X}_{\mathrm{F}}$.
 %
 Finally, if only a pure visual analysis of the closed-loop simulation is required then we encourage users to use
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 ETMPC.clicksim()
-\end{lstlisting}
+\end{verbatim}
 where initial state conditions are defined by the mouse.
 %
 %	Finally, for more rigorous verification of closed-loop stability we encourage a user to create a Lyapunov function $V$ that provides $V(x(k))>0$, $V(0)=0$, $V(x(k+1)) \leq \gamma V(x(k))$ for all $x(k) \in \mathbb{X}_{\mathrm{F}}$, some $\gamma \in [0,1)$, and all $k \geq 0$. This can be done easily by 
-%	\begin{lstlisting}[style=Matlab-editor]
+%	\begin{verbatim}
 	%		lyap = loop.toSystem.lyapunov(type)
-	%	\end{lstlisting}
+	%	\end{verbatim}
 
 \subsection{Complexity reduction of MPC controllers}
 \label{sec:code_mpt3lowcom}
@@ -483,29 +483,29 @@ where initial state conditions are defined by the mouse.
 Relevant group of \texttt{MPT} features includes the module \texttt{LowCom}~\cite{KH15} that provides various complexity reduction techniques of explicit MPC policies. Although the \texttt{LowCom} is not limited just for the tube MPC controllers, we consider the explicit tube MPC controller designed in Section~\ref{sec:mptplus_tube_mpc} in the following example.
 
 The first memory reduction technique is the Optimal Region Merging (ORM) method that aims to join critical regions with the same closed-loop feedback policy and whose union is a convex set. This method can be called: 
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 EMPCsim = EMPC.simplify('orm')
-\end{lstlisting}
+\end{verbatim}
 where \verb|ETMPCsim| is the constructed simplified controller. In our setup, this technique found $158$ critical regions that were merged. Hence, we have reduced the complexity by $28\%$ as the number of critical regions dropped from $565$ to $407$. 
 
 %
 %	The clipped-based method targets to achieve complexity reduction by removing all critical regions with saturated control law. Subsequently, to cover the entire original polytopic partition $\mathbb{X}_{\mathrm{F}}$, critical regions with unsaturated control law are extended and a clipping filter is introduced. This method can be called by 
-%	\begin{lstlisting}[style=Matlab-editor]
+%	\begin{verbatim}
 	%	simpleETMPC = ETMPC.simplify('clipping')
-	%	\end{lstlisting}
+	%	\end{verbatim}
 %	where \verb|simpleETMPC| denotes the resulting simplified controller. With our setup, 
 %
 The separation-based method targets to reduce the complexity of explicit controllers by removing all critical regions that lead to the saturated control laws, i.e., $u(t)$ that lay on the boundary of $\mathbb{U}$. Once this is done, a separation filter is constructed to identify optimal control actions above the removed critical regions. This simplification method is called:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 EMPCsim = EMPC.simplify('separation')
-\end{lstlisting}
+\end{verbatim}
 where \verb|ETMPCsim| denotes the resulting simplified controller. With the considered control setup, the separation-based controller has removed all $120$ regions with saturated feedback law which represents the reduction of $21\%$ w.r.t. its complex counterpart \verb|ETMPC|.
 
 The complexity reduction using the polynomial approximation significantly reduces the memory footprint by replacing the whole explicit solution map by a coefficients of the polynomials. The real-time runtimes are also decreased as the point location problem is replaced by the polynomial evaluation, see Section~\ref{sec:polynomial}. This approach is called and evaluated by:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 EMPCsim = PolynomialMPC(EMPC,options)
 u = EMPCsim.evaluate(x0)
-\end{lstlisting}
+\end{verbatim}
 where parameter \verb|options| provides user additional options for the approximation such as degree of the polynomial $\polydegree$, decay of the Lyapunov function $\gamma$, and many more.\footnote{For the complete list of options are available e.g. by calling \texttt{help PolynomialMPC} in \texttt{MATLAB}. We note that if a parameter is not provided, then the algorithm uses its default value.}
 The experimental results are analyzed in detail in Section~\ref{sec:polynomial_exp}.
 
@@ -520,60 +520,60 @@ The experimental results are analyzed in detail in Section~\ref{sec:polynomial_e
 Another contribution of this paper is inclusion of the so-called rate constraints that are defined in~\eqref{eq:rate_constraints_x_u}.
 
 Implementation of these constraints in \texttt{MPTplus} is straightforward. User has to include 
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 model.u.with('deltaMin')
 model.u.with('deltaMax')
 model.u.deltaMin = -0.5
 model.u.deltaMax =  0.5
-\end{lstlisting}
+\end{verbatim}
 to the original LTI system definition, see section III-B. Then we can evoke construction of the implicit tube MPC policy via:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 N = 2
 option={'solType',1,'LQRstability',1}
 TMPC = TMPCController(model,N,option)
-\end{lstlisting}
+\end{verbatim}
 to design \texttt{TMPC} instance that considers~\eqref{eq:rate_constraints_x_u} in~\eqref{eq:tmpc}.
 
 Subsequently, construction of the explicit MPC feedback law can be triggered by typing:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 ETMPC = TMPC.toExplicit;
-\end{lstlisting}
+\end{verbatim}
 that, for our specific case considered in this section, is defined over polyhedral partition consisting of $520$ critical regions.
 Finally, evaluation of these controllers for an initial state $x(t) = [-1, 1]^\top$ can be done by executing following commands:
-\begin{lstlisting}[style=Matlab-editor]
+\begin{verbatim}
 x0 = [1; -1]
 u_prev = 0;
 [u_0, feasible] = TMPC.evaluate(x0,...
 'u.previous', u_prev)
 [u_0, feasible] = ETMPC.evaluate(x0,...
 'u.previous', u_prev)
-\end{lstlisting}
+\end{verbatim}
 that lead to the same closed-loop control action $u_0 = [0.3678]$.
 Notice that the evaluation requires an additional parameter \verb|u_prev|, i.e. control action from the previous sampling period $u(t_{-})$ as in~\eqref{eq:rate_constraints_x_u}.
 
 
 %
 %Introducing the limits on the for rate constraints is straightforward, simply update the LTI system by:
-%\begin{lstlisting}[style=Matlab-editor]
+%\begin{verbatim}
 %model.u.with('deltaMin');
 %model.u.with('deltaMax');
 %model.u.deltaMin = -0.5;
 %model.u.deltaMax =  0.5;
-%\end{lstlisting}
+%\end{verbatim}
 %then, respectively construct the implicit and the explicit MPC controllers:
-%\begin{lstlisting}[style=Matlab-editor]
+%\begin{verbatim}
 %N = 2;
 %option={'solType',1,'LQRstability',1};
 %TMPC = TMPCController(model,N,option);
 %ETMPC = TMPC.toExplicit;
-%\end{lstlisting}
+%\end{verbatim}
 %leading to the explicit solution partition consisting of $520$ critical regions. Finally, evaluate the control action in receding horizon control policy:
-%\begin{lstlisting}[style=Matlab-editor]
+%\begin{verbatim}
 %x0 = [1; -1];
 %u_prev = 0;
 %[u, feasible] = TMPC.evaluate(x0,...
 %                'u.previous', u_prev)
-%\end{lstlisting}
+%\end{verbatim}
 %leading to the closed-loop control action $u_0 = [0.3678]$.
 
 %\subsection{LowCom}
