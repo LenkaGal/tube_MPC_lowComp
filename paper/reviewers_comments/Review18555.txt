@@ -1,0 +1,58 @@
+Reviewer 4 of CDC 2023 submission 1116
+
+Comments to the author
+======================
+
+The paper presents a new software package MPT+ extenting
+the well known Multi-Parametric-Toolbox (MPT). The aim of
+the software package is to support MPC development and
+application by, e.g., reducing memory usage for explicit
+MPC laws or supporting industrial applications. MPT+
+fucusses on tube-based robust MPC with rate constraints and
+(lightweight) polynomial approximations of explicit MPC. 
+
+The authors give an introduction to the fundamental
+theory, guiding and cursory information on how to use MPT+,
+and two studies proving MPT+'s function. The paper is
+mostly well-written but the authors should consider to
+delete some "the" before nouns that are adressed in
+general. e.g: "[...] operations over (the) convex sets." or
+"Although
+(the) MPC has been intensively studied [...]". Moreover,
+the are many typos (see minor comments below).
+
+Two major comments are:
+
+- I tried to implement the given
+(numerical) example with the provided matlab code on github
+(see the project's wiki on github). A successfull
+test of the example "Tube MPC design" failed since
+the computation of the robust invariant set did not
+converge. Please double-check or fix this issue before
+publication of the paper and library. 
+
+- Just giving information about the hardware for
+the numerical studies is not very informative. Please add
+compuational times etc. or consider to compare MPT2/3 with
+MPT+. 
+
+Minor Comments:
+
+- Please check Eq. (10). Should one term not be "-K*F_{x,i}
+x(k)"?
+- Page 1 - non-liner MPC / non-linear MPC
+- Page 2 - E \in \mathbb{R}^{n_x x n_w} is n_d
+meant (?)
+- Page 2 - fast-dynamics called Flexy2 [25]. (?) 
+- Page 3 - available on GitHub.
+- Page 2 - add relation between \hat{u}_k and
+\kappa(x(t))
+- Page 2 - what is K and how to compute it?
+- add to Eq. (16) bounds of d 
+- Delete "into" in "to be implemented into to the uncertain
+LTI" or considert to rewrite the whole sentence.
+
+In summary, I recommend to accept the paper and I wish the
+authors all the best for a sucessfull launch of MPT+.
+However, please double-check the github code and check the
+paper for typos / language.  

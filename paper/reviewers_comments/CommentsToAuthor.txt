@@ -1,0 +1,11 @@
+Comments to author (Associate Editor)
+=====================================
+
+All the Reviewers found that the manuscript introduces a
+fair contribution in the field of Matlab tools for MPC
+design. Furthermore, they also 
+provide detailed indications on how to improve the
+presentation of the potentials of the design tool.
+In this regard, I kindly invite the authors to address all
+the Reviewers' comments to enhance the quality of the
+manuscript.

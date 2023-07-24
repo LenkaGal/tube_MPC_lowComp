@@ -1,0 +1,29 @@
+Reviewer 1 of CDC 2023 submission 1116
+
+Comments to the author
+======================
+
+The authors present the software package MPT+ available for
+MATLAB. They show the theoretical background and a tutorial
+on how to implement it for explicit tube MPC and complexity
+reduction with polynomial approximation. The results are
+demonstrated on a numerical simulation and an application.
+The paper is well
+written. 
+The reviewer has some suggestions to improve the work:
+1. The difference with the work [24] is not clear, since
+both paper present the MPT+ toolbox and [24] is not yet
+available.
+2. In (1) and (2) two different representations for the
+disturbance (w and d) are given. It is not clear, why the
+authors uses two different representations. One would
+suffice. 
+3. Below (11), the authors wrote "The norm is considered as
+$p \in {1,\infty}$, i.e., the cost function (11a) is
+linear." In my opinion, neither a 1-norm nor a
+infinity-norm leads a linear cost. 
+4. In the code below of (16) the abbreviation TMPC is used.
+I would suggest to explain the meaning of the "T". 
+5. The code examples, in the right column of the 4th page
+show how to generate plots. This rises the expectation to
+see the mentioned plots also in the paper. 
