@@ -45,7 +45,7 @@
 	\begin{abstract}
 		
 		The industrial implementation of the model predictive control (MPC) is driven by the necessity to design, tune, and validate the constructed control policy. 
-		We present a novel software toolbox for advanced model predictive control (MPC) design extending the \texttt{Multi-Parametric toolbox} (\texttt{MPT}).  Particularly, \texttt{MPTplus} introduces several advanced MPC controller design methods, including memory-efficient explicit Tube MPC design, Tube MPC controller with the limited rate of control actions, and a polynomial approximation of the $1-$, $\infty-$norm-based explicit control law. The benefits of the proposed toolbox are demonstrated using both, numerical simulations and laboratory implementation on the device with fast dynamics.  
+		We present a novel software toolbox for advanced model predictive control (MPC) design extending the \texttt{Multi-Parametric toolbox} (\texttt{MPT}).  Particularly, \texttt{MPTplus} introduces several advanced MPC controller design methods, including memory-efficient explicit tube MPC design, tube MPC controller with the limited rate of control actions, and a polynomial approximation of the $1-$, $\infty-$norm-based explicit control law. The benefits of the proposed toolbox are demonstrated using both, numerical simulations and laboratory implementation on the device with fast dynamics.  
 		
 	\end{abstract}
 	
@@ -54,10 +54,10 @@
 	
 	% [ TOOD: Write an Introduction ]
 	% [ TOOD: Introduce MPC ]
-	Although the model predictive control (MPC)~\cite{M00, B17} provides an optimal control policy under various physical and performance constraints, its industrial implementation is still under its significant relevance~\cite{QB03}. 
+	Although model predictive control (MPC)~\cite{M00, B17} provides an optimal control policy under various physical and performance constraints, its industrial implementation is still under significant relevance~\cite{QB03}. 
 	Introducing multi-parametric programming into MPC design framework~\cite{BM02} gained its potential by reducing the runtimes and requirements on the advanced software, pushed the MPC implementation towards the industrial embedded hardware, see~\cite{PK21}. Moreover, the construction of the explicit solution map in the form of the piece-wise affine (PWA) function enables rigorous certification of the control law. 
 	%
-	Although the MPC has been intensively studied in the past three decades, there are still challenges worth addressing to spread its industrial implementation. Such a development is highly dependent on tailored validation tools. 
+	Although MPC has been intensively studied in the past three decades, there are still challenges worth addressing to spread its industrial implementation. Such a development is highly dependent on tailored validation tools. 
 	% MOVED
 	The MPC design problem is addressed in plenty of well-developed software tools. Most of the packages provide dedicated built-in solvers, and the other delegate the optimization problem to third-party solvers. 
 	
@@ -70,7 +70,7 @@
 	%
 	The non-linear MPC design problems are efficiently solved using the \texttt{ACADO Toolkit}~\cite{ACADO_Toolkit}. The non-convex optimization problem is solved by the sequential quadratic programming (SQP) approach.  \texttt{ACADO Toolkit} evaluates the library-dependent \texttt{C/C++} code and provides an interface for \texttt{MATLAB}. 
 	%
-	\texttt{CasADi}~\cite{CasADi} represents another toolbox suitable for the non-liner MPC design. This open-source package also provides interfaces for \texttt{MATLAB} and \texttt{Python}. 
+	\texttt{CasADi}~\cite{CasADi} represents another toolbox suitable for the non-linear MPC design. This open-source package also provides interfaces for \texttt{MATLAB} and \texttt{Python}. 
 	%
 	The non-linear MPC can be designed also using the open-source toolbox \texttt{MATMPC}~\cite{MATMPC}. 
 	%
@@ -79,7 +79,7 @@
 	Similar to \texttt{YALMIP} toolbox, the \texttt{CVX}~\cite{GB08} is focused on the modeling of various classes of convex optimization problems suitable for MPC controller design. 
 	
 	% [ TODO: Introduce MPT ]
-	The \texttt{Multi-Parametric Toolbox} (\texttt{MPT})~\cite{MPT3} for \texttt{MATLAB} represents a widely-used software package for the implicit (non-explicit) and explicit MPC design, multi-parametric optimization, and operations over the convex sets. \texttt{MPT} integrates many tools enabling efficient construction, tuning, and validation of the advanced MPC controllers. 
+	The \texttt{Multi-Parametric Toolbox} (\texttt{MPT})~\cite{MPT3} for \texttt{MATLAB} represents a widely-used software package for the implicit (non-explicit) and explicit MPC design, multi-parametric optimization, and operations over convex sets. \texttt{MPT} integrates many tools enabling efficient construction, tuning, and validation of the advanced MPC controllers. 
 	
 	The industrial implementation of the MPC is limited by the runtime effort and advanced hardware/software requirements, especially in the case of the implicit MPC, and memory consumption, limiting the implementation of explicit MPC on the industrial embedded hardware. Therefore, the complexity reduction methods are of high interest. 
 	% [ TODO: Introduce LowCom ]
@@ -87,16 +87,16 @@
 	In this framework, the polynomial-based approximation of the explicit solution maps introduced in~\cite{KL11} represents a perspective technique to minimize the memory footprint, however, it is not widely available in some user-friendly way, yet.
 	
 	% [ TODO: Introduce Tube MPC ]
-	In both, implicit and explicit MPC design problems, the Tube MPC represents a natural step toward the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, Tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
+	In both, implicit and explicit MPC design problems, the tube MPC represents a natural step toward the stochastic and non-linear MPC design. Finally, due to the ability to handle the quantized control variables, tube MPC is also a necessary tool in a highly relevant field of the encrypted MPC design using the cloud-computing services, e.g., see~\cite{DR18} and the related works.
 	
 	% [ TODO: Main contributions]
-	This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} augmenting the features of the original \texttt{MPT} toolbox by the notable methods introducing: (i) the framework for the memory-efficient explicit Tube MPC design, (ii) limits on a rate of control actions for implicit/explicit Tube MPC design, and (iii) the polynomial approximation of any explicit MPC controller according to~\cite{KL11}. To demonstrate the benefits of the proposed \texttt{MPTplus} for real-world applications, we analyze the results of an extensive case study considering the implementation of designed MPC controllers on the laboratory device having a fast-dynamics called Flexy~\cite{CK19}. 
+	This paper presents the \texttt{MATLAB} toolbox \texttt{MPTplus}~\cite{MPTplus} augmenting the features of the original \texttt{MPT} toolbox by the notable methods introducing: (i) the framework for the memory-efficient explicit tube MPC design, (ii) limits on a rate of control actions for implicit/explicit tube MPC design, and (iii) the polynomial approximation of any explicit MPC controller according to~\cite{KL11}. To demonstrate the benefits of the proposed \texttt{MPTplus} for real-world applications, we analyze the results of an extensive case study considering the implementation of designed MPC controllers on the laboratory device having a fast-dynamics called Flexy2~\cite{CK19}. 
 	
 	\section{Theoretical backgrounds}
 	\label{sec:tube_mpc_theory}
 	
 	% [ TOOD: Write the theoretical backgrounds on Tube MPC, delta-U constraints, and polynomial approximation. ] 
-	This section briefly reviews the main theoretical backgrounds of the currently implemented methods: (i) original (rigid) Tube MPC design approach proposed in~\cite{MS05} and its formulation considering multi-parametric optimization, (ii) limited rates on the control actions, and (iii) polynomial approximation of explicit control law.
+	This section briefly reviews the main theoretical backgrounds of the currently implemented methods: (i) original (rigid) tube MPC design approach proposed in~\cite{MS05} and its formulation considering multi-parametric optimization, (ii) limited rates on the control actions, and (iii) polynomial approximation of explicit control law.
 	
 	\subsection{Tube MPC design}
 	\label{sec:tube_mpc}
@@ -143,7 +143,7 @@
 	%\end{eqnarray}
 	%where $\Sigma$ represents a set addition. However, if the $K$ is not a dead-beat controller, then the minimal RPI set $\mathbb{T}$ does not necessarily lead to the polytope, see~\cite{MS05}. Therefore, $\mathbb{T}$ is designed as the outer approximation of the minimal RPI set.  
 
-	The conventional (rigid) Tube MPC design problem has the form~\cite{MS05}:
+	The conventional (rigid) tube MPC design problem has the form~\cite{MS05}:
 	\begin{subequations}
 		\label{eq:tmpc}
 		\begin{eqnarray}
@@ -166,10 +166,10 @@
 		\end{eqnarray}
 	\end{subequations}
 	for $\forall k = 0, \dots, N-1$,  $\forall l = 1, \dots, N-1$, and for prediction horizon $N$. Vectors $\hat{u}_{k}$ and $\hat{x}_{k}$ are decision variables optimized w.r.t. the nominal LTI system in~\eqref{eq:tmpc_model}, without any perturbations of the disturbance $w$. 
-	The squared $2-$norm objective function in~\eqref{eq:tmpc_cost} is minimized for the symmetric positive definite penalty factors $Q \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{x}}}$, $R \in \mathbb{R}^{n_{\mathrm{u}} \times n_{\mathrm{u}}}$, $P \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{x}}}$. 
-	The stability and recursive feasibility of the Tube MPC design problem in~\eqref{eq:tmpc} has been proved in~\cite{MS05}.
+	The squared $2-$norm objective function in~\eqref{eq:tmpc_cost} is minimized for the symmetric positive definite penalty factors $Q \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{x}}}$, $R \in \mathbb{R}^{n_{\mathrm{u}} \times n_{\mathrm{u}}}$, $P \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{x}}}$. $K$ represents the LQR gain. 
+	The stability and recursive feasibility of the tube MPC design problem in~\eqref{eq:tmpc} has been proved in~\cite{MS05}.
 	
-	Finally, the control action $u(t)$ to be implemented into to the uncertain LTI system in~\eqref{eq:ulti_system} is given by the control law $\kappa : \mathbb{X}_{\mathrm{F}} \rightarrow \mathbb{U}$
+	Finally, the control action $u(t)$ to be implemented to the uncertain LTI system in~\eqref{eq:ulti_system} is given by the control law $\kappa : \mathbb{X}_{\mathrm{F}} \rightarrow \mathbb{U}$
 	\begin{eqnarray}
 		\label{eq:tmpc_control_law}
 		\kappa(x(t)) = \hat{u}_{0}^{\star} + K \left( x(t) - \hat{x}_{0}^{\star} \right),
@@ -183,7 +183,7 @@
 		\label{eq:rate_constraints_x_u}
 		\Delta u(t) = u(t) - u(t_{-}) \in \mathbb{U}_{\Delta} ,
 	\end{eqnarray}
-	where $\Delta u(t) = u(t) - u(t_{-})$ is the rate of control action and $\mathbb{U}_{\Delta} \in \mathbb{R}^{n_{\mathrm{u}}}$ is the corresponding convex set bounding the rates. Then, the Tube MPC design problem in~\eqref{eq:tmpc} is extended by the linear constraint having the form: 
+	where $\Delta u(t) = u(t) - u(t_{-})$ is the rate of control action and $\mathbb{U}_{\Delta} \in \mathbb{R}^{n_{\mathrm{u}}}$ is the corresponding convex set bounding the rates. Then, the tube MPC design problem in~\eqref{eq:tmpc} is extended by the linear constraint having the form: 
 	\begin{eqnarray}
 		\label{eq:tmpc_constraints_input_delta_0}
 		\hat{u}_{k} + K ( x(t) - \hat{x}_{0} ) - u(t_{-}) \in \mathbb{U}_{\Delta} , 
@@ -218,7 +218,7 @@
 	%
 	%$\mathbb{T} = \mathbb{T}_{\mathrm{y}} \oplus \mathbb{T}_{\mathrm{x}}$
 	
-	\subsection{Explicit Tube MPC}
+	\subsection{Explicit tube MPC}
 	\label{sec:explicit_mpc}
 	
 	% [ TODO: Write about explicit Tube MPC. ]
@@ -243,12 +243,12 @@
 		\end{eqnarray}
 	\end{subequations}
 	where $F_{\mathrm{x},i}$, $F_{\mathrm{u},i}$, $g_{\mathrm{x},i}$, $g_{\mathrm{u},i}$ have appropriate dimensions. For further technical details see~\cite{BM02}. 
-	Analogous to~\cite{ZT14}, we re-formulate the control law of the explicit Tube MPC in~\eqref{eq:tmpc_control_law_pwa_particular} into the compact form:
+	Analogous to~\cite{ZT14}, we re-formulate the control law of the explicit tube MPC in~\eqref{eq:tmpc_control_law_pwa_particular} into the compact form:
 	\begin{eqnarray}
 		\label{eq:tmpc_control_law_pwa}
 		\kappa(x(k)) = \underbrace{ \left( K + F_{\mathrm{x},i} + F_{\mathrm{u},i} \right) }_{ F_{i} } x(k) + \underbrace{ \left( g_{\mathrm{u},i} - K g_{\mathrm{x},i} \right) }_{ g_{i} }.
 	\end{eqnarray}
-	We point out, that such a compact formulation significantly reduces the associated memory footprint necessary to store the PWAs compared to the conventional explicit formulation in~\eqref{eq:tmpc_control_law_pwa_particular}.  
+	We point out, that such a compact formulation significantly reduces the associated memory footprint necessary to store the PWA functions compared to the conventional explicit formulation in~\eqref{eq:tmpc_control_law_pwa_particular}.  
 	%
 	To be specific, the feedback law in~\eqref{eq:tmpc_control_law_pwa} saves $3\,n_\text{x}$ double precision numbers per each critical region compared to the original form~\eqref{eq:tmpc_control_law_pwa_particular_x}.
 	%
@@ -326,12 +326,12 @@
 	%\label{sec:code_mptplus}
 	
 	% [ TOOD: Describe an MPT+ package. ]
-	The \texttt{MPTplus} toolbox extends the functionality of the \texttt{MPT} toolbox~\cite{MPT3}. In this section, we introduce the novel features, including (i) efficient explicit Tube MPC controller construction, (ii) introducing incremental constraints into the Tube MPC design, and (iii) the general polynomial approximation of the PWA control law. 
+	The \texttt{MPTplus} toolbox extends the functionality of the \texttt{MPT} toolbox~\cite{MPT3}. In this section, we introduce the novel features, including (i) efficient explicit tube MPC controller construction, (ii) introducing incremental constraints into the tube MPC design, and (iii) the general polynomial approximation of the PWA control law. 
 	
 	\subsection{Installation}
 	\label{sec:installation}
 	
-	The \texttt{MPTplus} toolbox is freely available at \texttt{GitHub}\footnote{\texttt{MPTplus: \url{https://github.com/holaza/mptplus}}}. We recommend to install the package via \texttt{tbxManager}\footnote{\texttt{tbxManager: \url{https://www.tbxmanager.com}}} by typing:
+	The \texttt{MPTplus} toolbox is freely available on \texttt{GitHub}\footnote{\texttt{MPTplus: \url{https://github.com/holaza/mptplus}}}. We recommend to install the package via \texttt{tbxManager}\footnote{\texttt{tbxManager: \url{https://www.tbxmanager.com}}} by typing:
 	\begin{verbatim}
 		tbxmanager install mptplus
 	\end{verbatim} 
@@ -341,7 +341,7 @@
 	\subsection{Explicit tube MPC design}
 	\label{sec:mptplus_tube_mpc}
 	
-	In this section, we will show how one can easily derive an explicit Tube MPC policy. For demonstrative reasons, we will assume a double integrator model adopted from~\cite{MS05}:
+	In this section, we will show how one can easily derive an explicit tube MPC policy. For demonstrative reasons, we will assume a double integrator model adopted from~\cite{MS05}:
 	\begin{eqnarray}
 		\label{eq:example_system}
 		x(t+T_\text{s}) = 
@@ -361,19 +361,25 @@
 		\end{bmatrix}
 		d(t) ,
 	\end{eqnarray}
-	that is subjected to state $[-200, -2]^{\top} \preceq x(t) \preceq [200, 2]^{\top}$ and control input $-1 \leq u(t) \leq 1$ constraints.
+	that is subjected to state and control input constraints as follows:
 	\begin{subequations}
 		\label{eq:example_system:cons}
 		\begin{align}
 			[-200, -2]^{\top} &\preceq x(t) \preceq [200, 2]^{\top}, \\
-			-1 &\leq u(t) \leq 1.
+			-1 &\leq u(t) \leq 1,
 		\end{align}
 	\end{subequations}
+
+	and the disturbance is constrained in a following way:
+	\begin{eqnarray}
+		[-0.1, -0.1]^{\top} &\preceq x(t) \preceq [0.1, 0.1]^{\top}.
+	\end{eqnarray}
+
+
 	
 	
-	
-	First, assume the implicit Tube MPC design. We defined ``\verb|model|'', i.e., the object that contains prediction model~\eqref{eq:example_system} as in~\eqref{eq:tmpc_model}, constraints~\eqref{eq:example_system:cons} transformed into~\eqref{eq:tmpc_constraints_state}-\eqref{eq:tmpc_constraints_input}, penalty matrices, the appertain LQR terminal penalty and terminal set as in~\eqref{eq:tmpc_cost} and~\eqref{eq:tmpc_constraints_terminal}, respectively. 
-	Finally, using the \texttt{MPTplus}, we may simply construct and evaluate the implicit Tube MPC controller by typing:
+	First, assume the implicit tube MPC design. We defined ``\verb|model|'', i.e., the object that contains prediction model~\eqref{eq:example_system} as in~\eqref{eq:tmpc_model}, constraints~\eqref{eq:example_system:cons} transformed into~\eqref{eq:tmpc_constraints_state}-\eqref{eq:tmpc_constraints_input}, penalty matrices, the appertain LQR terminal penalty and terminal set as in~\eqref{eq:tmpc_cost} and~\eqref{eq:tmpc_constraints_terminal}, respectively. 
+	Finally, using the \texttt{MPTplus}, we may simply construct and evaluate the implicit tube MPC controller by typing:
 	\begin{verbatim}
 		model=ULTISystem('A', [1, 1; 0, 1],...
 		'B', [0.5; 1],...
@@ -450,7 +456,7 @@
 	\end{verbatim}
 	to plot the polytopic partition~\eqref{eq:tmpc_partition}, the PWA feedback law~\eqref{eq:tmpc_control_law_pwa}, and the PWQ value function as defined in~\eqref{eq:tmpc_cost}, respectively.\footnote{We note that while both, the PWA feedback law and the PWQ value function, are given as solution to~\eqref{eq:tmpc} the solution~\eqref{eq:tmpc_control_law_pwa_particular} was posterior transformed into~\eqref{eq:tmpc_control_law_pwa}, however, the value function preserves its form of~\eqref{eq:tmpc_cost}.}
 	
-	To perform a closed-loop simulation of a computed explicit Tube MPC controller one can define an object:
+	To perform a closed-loop simulation of a computed explicit tube MPC controller one can define an object:
 	\begin{verbatim}
 		loop = ClosedLoop(ETMPC,model)
 	\end{verbatim}
@@ -480,7 +486,7 @@
 	\subsection{Complexity reduction of MPC controllers}
 	\label{sec:code_mpt3lowcom}
 	
-	Relevant group of \texttt{MPT} features includes the module \texttt{LowCom}~\cite{KH15} that provides various complexity reduction techniques of explicit MPC policies. Although the \texttt{LowCom} is not limited just to the Tube MPC controllers, we consider the explicit Tube MPC controller designed in Section~\ref{sec:mptplus_tube_mpc} in the following example.
+	Relevant group of \texttt{MPT} features includes the module \texttt{LowCom}~\cite{KH15} that provides various complexity reduction techniques of explicit MPC policies. Although the \texttt{LowCom} is not limited just to the tube MPC controllers, we consider the explicit tube MPC controller designed in Section~\ref{sec:mptplus_tube_mpc} in the following example.
 	
 	The first memory reduction technique is the Optimal Region Merging (ORM) method aiming to join critical regions with the same closed-loop feedback policy and whose union is a convex set. This method can be called: 
 	\begin{verbatim}
@@ -527,7 +533,7 @@
 		model.u.deltaMin = -0.5
 		model.u.deltaMax =  0.5
 	\end{verbatim}
-	to the original LTI system definition, see section III-B. Then we can evoke the construction of the implicit Tube MPC policy via:
+	to the original LTI system definition, see section III-B. Then we can evoke the construction of the implicit tube MPC policy via:
 	\begin{verbatim}
 		N = 2
 		option={'solType',1,'LQRstability',1}
@@ -602,10 +608,10 @@
 		\end{center}
 	\end{figure}
 	
-	This section addresses the experimental implementation of the two presented control methods, i.e., the Tube explicit MPC with rate constraints, and the polynomial approximation of an explicit MPC controller. To provide experimental results presenting the proposed methods, the case study was realized on a dynamical SISO device Flexy2~\cite{flexy2}, see Figure~\ref{fig:flexy2}. The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
+	This section addresses the experimental implementation of the two presented control methods, i.e., the tube explicit MPC with rate constraints, and the polynomial approximation of an explicit MPC controller. To provide experimental results presenting the proposed methods, the case study was realized on a dynamical SISO device Flexy2~\cite{flexy2}, see Figure~\ref{fig:flexy2}. The actuator is a fan that propels an air column in an upward vertical direction. The power of the airflow is measured
 	by a flexible sensor placed in the air column. The sensor changes its electrical resistance according to the bend caused by the push of the air. Therefore, the flex sensor bend $b(t)$ in percentage is assumed as the controlled variable, and the fan speed $v(t)$ in percentage is a manipulated variable.
 	
-	Flexy2 is a system with non-linear dynamics, as the sensitivity of the flex bend decreases when increasing fan speed. Moreover, the oscillations are minor at higher fan speeds. Lastly, the measurement noise is also present. These challenges make this device a suitable candidate for the implementation of Tube MPC. As the system is naturally very fast and requires low sampling time with a fast evaluation of the control inputs, the explicit solution of Tube MPC is considered. In this paper, the goal was to control the flex sensor bend $b(t)$ to a steady-state value $b^\text{s}$ and reject the effect of a disturbance $d(t)$.
+	Flexy2 is a system with non-linear dynamics, as the sensitivity of the flex bend decreases when increasing fan speed. Moreover, the oscillations are minor at higher fan speeds. Lastly, the measurement noise is also present. These challenges make this device a suitable candidate for the implementation of tube MPC. As the system is naturally very fast and requires low sampling time with a fast evaluation of the control inputs, the explicit solution of tube MPC is considered. In this paper, the goal was to control the flex sensor bend $b(t)$ to a steady-state value $b^\text{s}$ and reject the effect of a disturbance.
 	
 	\begin{figure}
 		\begin{center}
@@ -643,7 +649,7 @@
 	\subsection{Tube explicit MPC with rate constraints}
 	\label{sec:tube_exp}
 	
-	In this section, the implementation of Tube explicit MPC with rate constraints is described. Let us consider the system model in~\eqref{eq:model_A_B} and constraints stated in~\eqref{eq:const_du}. 
+	In this section, the implementation of tube explicit MPC with rate constraints is described. Let us consider the system model in~\eqref{eq:model_A_B} and constraints stated in~\eqref{eq:const_du}. 
 	As the uncertainties in the model were considered, the additive disturbance was considered in the MPC design as well and was constrained as:
 	\begin{eqnarray}
 		\label{eq:const_w}
@@ -680,7 +686,7 @@
 	\end{eqnarray}
 	The prediction horizon $N$ was set to 30 steps. 
 	%The associated explicit MPC policy was constructed via \texttt{MPTplus} framework by execution several lines of code as described in Section~\ref{sec:explicit_mpc}. The resulting feedback law~\eqref{eq:tmpc_control_law_pwa} consisted of $n_\text{r} = 12$ critical regions.
-	After the construction of the Tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Figure~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b(t)$. In Figure~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v(t)$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\,\%$, while rejecting the effect of the two disturbances occurring at times 5\,s and 10\,s. 
+	After the construction of the tube explicit model predictive controller, the disturbance rejection control problem was investigated. The control results can be seen in Figure~\ref{fig:deltaU_y} for the controlled variable, i.e., the flex sensor bend $b(t)$. In Figure~\ref{fig:deltaU_u}, the corresponding trajectory of manipulated variable is depicted, i.e., the trajectory of fan speed $v(t)$. The aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\,\%$, while rejecting the effect of the two disturbances occurring at times 5\,s and 10\,s. 
 	
 	When observing Figures~\ref{fig:deltaU_y}, \ref{fig:deltaU_u}, it can be seen that the goal of the control was achieved. The effects of both disturbances were rejected, with respect to the constraints on the manipulated and controlled variables. Moreover, the constraints on the change of the manipulated variable were satisfied as well.
 	
@@ -690,7 +696,7 @@
 	\begin{figure}[bp!]
 		\begin{center}
 			\includegraphics[width=0.5\textwidth]{images/approximation.eps}
-			\caption{Approximation of the optimal explicit Tube MPC. The blue line represents the optimal control law, the yellow area is the stability tube, and the red line represents the polynomial approximation of the optimal control law.}
+			\caption{Approximation of the optimal explicit MPC. The blue line represents the optimal control law, the yellow area is the stability tube, and the red line represents the polynomial approximation of the optimal control law.}
 			\label{fig:approx}
 		\end{center}
 	\end{figure}
@@ -715,7 +721,7 @@
 	\begin{figure}[bp!]
 		\begin{center}
 			\includegraphics[width=0.5\textwidth]{images/poly_b.eps}
-			\caption{Comparison of optimal explicit Tube MPC and its polynomial approximation: trajectory of the controlled variable.}
+			\caption{Comparison of optimal explicit MPC and its polynomial approximation: trajectory of the controlled variable.}
 			\label{fig:poly_y}
 		\end{center}
 		%\end{figure}
@@ -723,7 +729,7 @@
 		%\begin{figure}
 		\begin{center}
 			\includegraphics[width=0.5\textwidth]{images/poly_v.eps}
-			\caption{Comparison of optimal explicit Tube MPC and its polynomial approximation: trajectory of the manipulated variable.}
+			\caption{Comparison of optimal explicit MPC and its polynomial approximation: trajectory of the manipulated variable.}
 			\label{fig:poly_u}
 		\end{center}
 	\end{figure}
@@ -739,7 +745,7 @@
 	\label{sec:conclusions}
 	
 	% [ TOOD: Summarize the main conclusions. ]
-	The paper presented a detailed tutorial for package \texttt{MPTplus} extending the original \texttt{MPT} toolbox. Among other relevant features, the release introduces the full framework for the memory-efficient explicit Tube MPC design taking into account also the limited rate of control action. \texttt{MPT} toolbox also enables the construction of light-weight polynomial-approximation-based controllers. The possibilities of construction, tuning, and validation of the various MPC controllers were analyzed by the laboratory implementation on the device with fast dynamics. The measured control profiles confirmed the ease of MPC tuning and the benefits of the user-friendly environment of \texttt{MPTplus} pushing the designed MPC controllers towards their industrial implementation.
+	The paper presented a detailed tutorial for package \texttt{MPTplus} extending the original \texttt{MPT} toolbox. Among other relevant features, the release introduces the full framework for the memory-efficient explicit tube MPC design taking into account also the limited rate of control action. \texttt{MPT} toolbox also enables the construction of light-weight polynomial-approximation-based controllers. The possibilities of construction, tuning, and validation of the various MPC controllers were analyzed by the laboratory implementation on the device with fast dynamics. The measured control profiles confirmed the ease of MPC tuning and the benefits of the user-friendly environment of \texttt{MPTplus} pushing the designed MPC controllers towards their industrial implementation.
 	
 	\addtolength{\textheight}{-12cm}
 	
