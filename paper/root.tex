@@ -690,6 +690,8 @@
 	
 	When observing Figures~\ref{fig:deltaU_y}, \ref{fig:deltaU_u}, it can be seen that the goal of the control was achieved. The effects of both disturbances were rejected, with respect to the constraints on the manipulated and controlled variables. Moreover, the constraints on the change of the manipulated variable were satisfied as well.
 	
+	From the viewpoint of computational complexity, the average time to evaluate the control input was 1 milisecond, which is suitable for the considered sampling time $T_\mathrm{s} = 0.01$\,s.
+	
 	\subsection{Polynomial approximation of explicit MPC}
 	\label{sec:polynomial_exp}
 	
@@ -739,6 +741,8 @@
 	The comparison of the control results can be seen in Figure~\ref{fig:poly_y} for the controlled variable and in Figure~\ref{fig:poly_u} for the manipulated input. In both graphs, two trajectories are depicted - for the original optimal controller with subscript ``o'' and its polynomial approximation with subscript ``p''. Analogously to the first case study, the aim was to drive the flex sensor bend to the steady state $ b^\mathrm{s} = 68\,\%$, while rejecting the effect of the two disturbances occurring at times 5\,s and 10\,s.
 	
 	It can be seen in Figure~\ref{fig:poly_y}, that both disturbances were successfully rejected. Compared to the optimal controller, the approximated one was less oscillating in terms of manipulated variable, see Figure~\ref{fig:poly_u}. With more cautious control inputs, the effect of the disturbance on the trajectory of the controlled variable is more significant. The reason for less oscillating control inputs can be seen in Figure~\ref{fig:approx}. The original PWA control law is steeper around the origin, while the polynomial approximation is quite moderate. The approximation can be further tuned by setting the polynomial order, which, obviously, directly affects the control performance.
+	
+	From the viewpoint of computational complexity, the average time to evaluate the optimal control input was $9 \times 10^{-4}$\,s, which is suitable for the considered sampling time $T_\mathrm{s} = 0.01$\,s. The average control input evaluation corresponding to the polynomial controller took even less, i.e., $3 \times 10^{-5}$\,s. 
 	
 	
 	\section{Conclusions}
