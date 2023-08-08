@@ -106,7 +106,7 @@
 		\label{eq:ulti_system}
 		x(t+T_{\mathrm{s}}) = A x(t) + B u(t) + E d(t), % \quad x(0) = x_{0},
 	\end{eqnarray}
-	where $t$ is the time sample of the discrete-time domain defined using a sampling time $T_{\mathrm{s}}$. $A \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{x}}}$ is system matrix, $B \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{u}}}$ is input matrix, such that the matrix pair $(A,B)$ is stabilizable. $E \in \mathbb{R}^{n_{\mathrm{n}_{x}} \times n_{\mathrm{n}_{w}}}$ is disturbance matrix, $x \in \mathbb{R}^{n_{\mathrm{x}}}$ is the vector of the system states, $u \in \mathbb{R}^{n_{\mathrm{u}}}$ is control action, $d \in \mathbb{D} \subset \mathbb{R}^{n_{\mathrm{x}}}$ is bounded additive disturbance such that $\mathbb{D}$ is compact set containing the origin. 
+	where $t$ is the time sample of the discrete-time domain defined using a sampling time $T_{\mathrm{s}}$. $A \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{x}}}$ is system matrix, $B \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{u}}}$ is input matrix, such that the matrix pair $(A,B)$ is stabilizable. $E \in \mathbb{R}^{n_{\mathrm{x}} \times n_{\mathrm{d}}}$ is disturbance matrix, $x \in \mathbb{R}^{n_{\mathrm{x}}}$ is the vector of the system states, $u \in \mathbb{R}^{n_{\mathrm{u}}}$ is control action, $d \in \mathbb{D} \subset \mathbb{R}^{n_{\mathrm{d}}}$ is bounded additive disturbance such that $\mathbb{D}$ is compact set containing the origin. 
 	For the disturbance in~\eqref{eq:ulti_system} holds:
 	\begin{eqnarray}
 		\label{eq:disturbance_set}
@@ -246,7 +246,7 @@
 	Analogous to~\cite{ZT14}, we re-formulate the control law of the explicit tube MPC in~\eqref{eq:tmpc_control_law_pwa_particular} into the compact form:
 	\begin{eqnarray}
 		\label{eq:tmpc_control_law_pwa}
-		\kappa(x(k)) = \underbrace{ \left( K + F_{\mathrm{x},i} + F_{\mathrm{u},i} \right) }_{ F_{i} } x(k) + \underbrace{ \left( g_{\mathrm{u},i} - K g_{\mathrm{x},i} \right) }_{ g_{i} }.
+		\kappa(x(k)) = \underbrace{ \left( K - K F_{\mathrm{x},i} + F_{\mathrm{u},i} \right) }_{ F_{i} } x(k) + \underbrace{ \left( g_{\mathrm{u},i} - K g_{\mathrm{x},i} \right) }_{ g_{i} }.
 	\end{eqnarray}
 	We point out, that such a compact formulation significantly reduces the associated memory footprint necessary to store the PWA functions compared to the conventional explicit formulation in~\eqref{eq:tmpc_control_law_pwa_particular}.  
 	%
@@ -274,15 +274,15 @@
 			&\,& u_{k} \in \mathbb{U},
 		\end{eqnarray}
 	\end{subequations}
-	where the properties of the parameters are adopted from the optimization problem in~\eqref{eq:tmpc}. The norm is considered as $p \in \{1,\infty \}$, i.e., the cost function in~\eqref{eq:empc_cost} is linear. Then, by multi-parametric solving for all feasible $x_0 \in \mathbb{X}_{\mathrm{F}}$, the PWA explicit feedback control law is obtained in the form:
+	where the properties of the parameters are adopted from the optimization problem in~\eqref{eq:tmpc}. The norm is considered as $p \in \{1,\infty \}$, i.e., the problem in~\eqref{eq:empc} can be formulated as a Linear Program (LP). Then, by multi-parametric solving for all feasible $x_0 \in \mathbb{X}_{\mathrm{F}}$, the PWA explicit feedback control law is obtained in the form:
 	\begin{eqnarray}
 		\label{eq:empc_control_law}
-		u^{\star}(x(t)) \!\!\!\!&=&\!\!\!\! F_{i} \, x(t) + g_{i} \quad \text{if} \quad x(t) \in \mathcal{P}_{i}.
+		\kappa(x(t)) \!\!\!\!&=&\!\!\!\! F_{i} \, x(t) + g_{i} \quad \text{if} \quad x(t) \in \mathcal{P}_{i}.
 	\end{eqnarray}
 	The aim of this complexity reduction approach is to approximate the PWA control law in~\eqref{eq:empc_control_law} with a polynomial:
 	\begin{eqnarray}
 		\label{eq:poly_control_law}
-		\widetilde{u}^{\star}(x(t)) \!\!\!\!&=&\!\!\!\! a_{1} \, x(t) + a_{2} x(t)^2 + \dots + a_{d} x(t)^\polydegree,
+		\widetilde{\kappa}(x(t)) \!\!\!\!&=&\!\!\!\! a_{1} \, x(t) + a_{2} x(t)^2 + \dots + a_{d} x(t)^\polydegree,
 	\end{eqnarray}
 	where $a =\{a_{1}, \dots, a_{d}\}$ are the coefficients of the polynomial, and $\polydegree$ is the polynomial degree which is fixed and given in advance by the control engineer. Note, the polynomial degree $\polydegree$ directly dictates the memory footprint of the approximated control law in~\eqref{eq:poly_control_law} and at the same time affects the performance loss. Therefore, $\polydegree$ is the main tuning parameter of the method that trades off the performance and the complexity reduction of~\eqref{eq:poly_control_law}.
 	
@@ -301,7 +301,7 @@
 			[x^\top, u^\top]^\top \, : \, [T_i^{\mathrm{x}}, T_i^{\mathrm{u}}] [x^\top, u^\top]^\top \le T_i^0		
 		\end{Bmatrix}. 
 	\end{eqnarray}
-	If such a stabilizing Lyapunov function exists and a stability ``tube'' is constructed, then the polynomial coefficients $a$ are obtained by solving a Polya-filter-based linear program minimizing the suboptimality level of~\eqref{eq:poly_control_law} from its optimal counterpart~\eqref{eq:empc_control_law}, i.e., $\min(\Vert\widetilde{u}^{\star}(x(t))-	u^{\star}(x(t))\Vert^{p})$. For a more detailed overview of the approximation procedure see~\cite{kvasnica_polynomial}.
+	If such a stabilizing Lyapunov function exists and a stability ``tube'' is constructed, then the polynomial coefficients $a$ are obtained by solving a Polya-filter-based linear program minimizing the suboptimality level of~\eqref{eq:poly_control_law} from its optimal counterpart~\eqref{eq:empc_control_law}, i.e., $\min(\Vert\widetilde{\kappa}(x(t)) -	\kappa(x(t))\Vert^{p})$. For a more detailed overview of the approximation procedure see~\cite{kvasnica_polynomial}.
 	
 	%If a stabilizing Lyapunov function can be found and a stability tube can be constructed, then the following linear programming problem can be solved
 	%\begin{subequations}
