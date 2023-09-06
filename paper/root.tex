@@ -471,7 +471,15 @@
 		u = ETMPC.evaluate(x)
 	\end{verbatim}
 	for any given feasible state vector $x\in\mathbb{X}_{\mathrm{F}}$.
-	%
+	
+	The complexity reduction using the polynomial approximation significantly reduces the memory footprint by replacing the whole explicit solution map by coefficients of the polynomials~\cite{KL11}. The real-time runtimes are also decreased as the point location problem is replaced by the polynomial evaluation, see Section~\ref{sec:polynomial}. This approach is called, depicted, and evaluated by:
+	\begin{verbatim}
+		EMPCsim = PolynomialMPC(EMPC,options)
+		EMPCsim.plot
+		u = EMPCsim.evaluate(x0)
+	\end{verbatim}
+	where parameter \verb|options| provides the user additional options for the approximation such as the degree of the polynomial $\polydegree$, decay of the Lyapunov function $\gamma$, and many more.\footnote{For the complete list of available options, call \texttt{help PolynomialMPC} in \texttt{MATLAB}. We note that if a parameter is not provided, then the algorithm uses its default value.}
+	
 	Finally, if only a pure visual analysis of the closed-loop simulation is required then we encourage users to use
 	\begin{verbatim}
 		ETMPC.clicksim()
@@ -483,38 +491,38 @@
 		%		lyap = loop.toSystem.lyapunov(type)
 		%	\end{verbatim}
 	
-	\subsection{Complexity reduction of MPC controllers}
-	\label{sec:code_mpt3lowcom}
-	
-	Relevant group of \texttt{MPT} features includes the module \texttt{LowCom}~\cite{KH15} that provides various complexity reduction techniques of explicit MPC policies. Although the \texttt{LowCom} is not limited just to the tube MPC controllers, we consider the explicit tube MPC controller designed in Section~\ref{sec:mptplus_tube_mpc} in the following example.
-	
-	The first memory reduction technique is the Optimal Region Merging (ORM) method aiming to join critical regions with the same closed-loop feedback policy and whose union is a convex set. This method can be called: 
-	\begin{verbatim}
-		EMPCsim = EMPC.simplify('orm')
-	\end{verbatim}
-	where \verb|ETMPCsim| is the constructed simplified controller. In our setup, this technique found $158$ critical regions that were merged. Hence, we have reduced the complexity by $28\%$ as the number of critical regions dropped from $565$ to $407$. 
-	
-	%
-	%	The clipped-based method targets to achieve complexity reduction by removing all critical regions with saturated control law. Subsequently, to cover the entire original polytopic partition $\mathbb{X}_{\mathrm{F}}$, critical regions with unsaturated control law are extended and a clipping filter is introduced. This method can be called by 
-	%	\begin{verbatim}
-		%	simpleETMPC = ETMPC.simplify('clipping')
-		%	\end{verbatim}
-	%	where \verb|simpleETMPC| denotes the resulting simplified controller. With our setup, 
-	%
-	The separation-based method targets to reduce the complexity of explicit controllers by removing all critical regions that lead to the saturated control laws, i.e., $u(t)$ that lay on the boundary of $\mathbb{U}$. Once this is done, a separation filter is constructed to identify optimal control actions above the removed critical regions. This simplification method is called:
-	\begin{verbatim}
-		EMPCsim = EMPC.simplify('separation')
-	\end{verbatim}
-	where \verb|ETMPCsim| denotes the resulting simplified controller. With the considered control setup, the separation-based controller has removed all $120$ regions with saturated feedback law which represents the reduction of $21\%$ w.r.t. its complex counterpart \verb|ETMPC|.
-	
-	The complexity reduction using the polynomial approximation significantly reduces the memory footprint by replacing the whole explicit solution map by coefficients of the polynomials~\cite{KL11}. The real-time runtimes are also decreased as the point location problem is replaced by the polynomial evaluation, see Section~\ref{sec:polynomial}. This approach is called, depicted, and evaluated by:
-	\begin{verbatim}
-		EMPCsim = PolynomialMPC(EMPC,options)
-		EMPCsim.plot
-		u = EMPCsim.evaluate(x0)
-	\end{verbatim}
-	where parameter \verb|options| provides the user additional options for the approximation such as the degree of the polynomial $\polydegree$, decay of the Lyapunov function $\gamma$, and many more.\footnote{For the complete list of options are available, e.g., by calling \texttt{help PolynomialMPC} in \texttt{MATLAB}. We note that if a parameter is not provided, then the algorithm uses its default value.}
-	The experimental results are analyzed in detail in Section~\ref{sec:polynomial_exp}.
+%	\subsection{Complexity reduction of MPC controllers}
+%	\label{sec:code_mpt3lowcom}
+%	
+%	Relevant group of \texttt{MPT} features includes the module \texttt{LowCom}~\cite{KH15} that provides various complexity reduction techniques of explicit MPC policies. Although the \texttt{LowCom} is not limited just to the tube MPC controllers, we consider the explicit tube MPC controller designed in Section~\ref{sec:mptplus_tube_mpc} in the following example.
+%	
+%	The first memory reduction technique is the Optimal Region Merging (ORM) method aiming to join critical regions with the same closed-loop feedback policy and whose union is a convex set. This method can be called: 
+%	\begin{verbatim}
+%		EMPCsim = EMPC.simplify('orm')
+%	\end{verbatim}
+%	where \verb|ETMPCsim| is the constructed simplified controller. In our setup, this technique found $158$ critical regions that were merged. Hence, we have reduced the complexity by $28\%$ as the number of critical regions dropped from $565$ to $407$. 
+%	
+%	%
+%	%	The clipped-based method targets to achieve complexity reduction by removing all critical regions with saturated control law. Subsequently, to cover the entire original polytopic partition $\mathbb{X}_{\mathrm{F}}$, critical regions with unsaturated control law are extended and a clipping filter is introduced. This method can be called by 
+%	%	\begin{verbatim}
+%		%	simpleETMPC = ETMPC.simplify('clipping')
+%		%	\end{verbatim}
+%	%	where \verb|simpleETMPC| denotes the resulting simplified controller. With our setup, 
+%	%
+%	The separation-based method targets to reduce the complexity of explicit controllers by removing all critical regions that lead to the saturated control laws, i.e., $u(t)$ that lay on the boundary of $\mathbb{U}$. Once this is done, a separation filter is constructed to identify optimal control actions above the removed critical regions. This simplification method is called:
+%	\begin{verbatim}
+%		EMPCsim = EMPC.simplify('separation')
+%	\end{verbatim}
+%	where \verb|ETMPCsim| denotes the resulting simplified controller. With the considered control setup, the separation-based controller has removed all $120$ regions with saturated feedback law which represents the reduction of $21\%$ w.r.t. its complex counterpart \verb|ETMPC|.
+%	
+%	The complexity reduction using the polynomial approximation significantly reduces the memory footprint by replacing the whole explicit solution map by coefficients of the polynomials~\cite{KL11}. The real-time runtimes are also decreased as the point location problem is replaced by the polynomial evaluation, see Section~\ref{sec:polynomial}. This approach is called, depicted, and evaluated by:
+%	\begin{verbatim}
+%		EMPCsim = PolynomialMPC(EMPC,options)
+%		EMPCsim.plot
+%		u = EMPCsim.evaluate(x0)
+%	\end{verbatim}
+%	where parameter \verb|options| provides the user additional options for the approximation such as the degree of the polynomial $\polydegree$, decay of the Lyapunov function $\gamma$, and many more.\footnote{For the complete list of options are available, e.g., by calling \texttt{help PolynomialMPC} in \texttt{MATLAB}. We note that if a parameter is not provided, then the algorithm uses its default value.}
+%	The experimental results are analyzed in detail in Section~\ref{sec:polynomial_exp}.
 	
 	% TEMP ZZZ
 	% Needlessly to say, there are many advanced methods that can be used on top of the ``\verb|ETMPC|'' object that, due to paper limitations, can not be listed here. All interested readers are hence referred to the dedicated \texttt{MPT} website: \\ \texttt{\url{https://www.mpt3.org}}.
